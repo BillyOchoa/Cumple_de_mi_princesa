@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Feliz Cumpleaños! 🎂</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+        }
+
+        /* Pantalla del pastel */
+        #cake-screen {
+            text-align: center;
+            animation: fadeIn 1s ease-in;
+        }
+
+        #cake-screen h1 {
+            color: white;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .cake-wrapper {
+            position: relative;
+            display: inline-block;
+            margin: 0 auto;
+        }
+
+        /* Base del pastel */
+        .cake-base {
+            width: 240px;
+            height: 30px;
+            background: #8b0000;
+            border-radius: 0 0 25px 25px;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        /* Cuerpo del pastel */
+        .cake {
+            width: 220px;
+            height: 140px;
+            background: linear-gradient(180deg, #ff6b9d 0%, #c9184a 100%);
+            border-radius: 15px 15px 0 0;
+            position: relative;
+            z-index: 2;
+            margin: 0 auto;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        /* Decoración superior del pastel */
+        .cake-top {
+            width: 240px;
+            height: 35px;
+            background: linear-gradient(180deg, #ffd93d 0%, #f4c430 100%);
+            border-radius: 50%;
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Velas */
+        .candles {
+            position: absolute;
+            top: -75px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 35px;
+            z-index: 4;
+        }
+
+        .candle {
+            width: 12px;
+            height: 55px;
+            background: linear-gradient(180deg, #ffffff 0%, #e8e8e8 100%);
+            border-radius: 6px 6px 0 0;
+            position: relative;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .candle::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 14px;
+            height: 8px;
+            background: #ff6b9d;
+            border-radius: 50% 50% 0 0;
+        }
+
+        .flame {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 18px;
+            height: 25px;
+            background: radial-gradient(circle, #ffd93d 0%, #ff6b35 60%, #ff4500 100%);
+            border-radius: 50% 50% 20% 20%;
+            animation: flicker 0.3s infinite alternate;
+            box-shadow: 0 0 15px rgba(255, 200, 50, 0.8);
+        }
+
+        .flame.blown {
+            animation: blowOut 0.5s forwards;
+        }
+
+        @keyframes flicker {
+            0% { 
+                transform: translateX(-50%) scaleY(1);
+                opacity: 1;
+            }
+            100% { 
+                transform: translateX(-50%) scaleY(1.15);
+                opacity: 0.9;
+            }
+        }
+
+        @keyframes blowOut {
+            0% { 
+                opacity: 1;
+                transform: translateX(-50%) scale(1);
+            }
+            50% {
+                transform: translateX(-50%) scale(1.3) translateX(-10px);
+                opacity: 0.5;
+            }
+            100% { 
+                opacity: 0;
+                transform: translateX(-50%) scale(0);
+            }
+        }
+
+        .blow-instruction {
+            color: white;
+            font-size: 1.2em;
+            margin-top: 60px;
+            padding: 15px 25px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            display: inline-block;
+        }
+
+        .mic-button {
+            margin-top: 25px;
+            padding: 15px 35px;
+            font-size: 1.1em;
+            background: #ffd93d;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .mic-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        }
+
+        .mic-button:active {
+            transform: translateY(-1px);
+        }
+
+        /* Pantalla de tarjetas */
+        #cards-screen {
+            display: none;
+            animation: fadeIn 1s ease-in;
+            position: relative;
+            min-height: 400px;
+        }
+
+        .card-container {
+            position: relative;
+            width: 100%;
+            height: 450px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 25px;
+            padding: 40px 30px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            position: absolute;
+            width: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transform: scale(0.9) translateY(30px);
+            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .card.active {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            z-index: 2;
+        }
+
+        .card.exiting {
+            opacity: 0;
+            transform: scale(0.9) translateY(-30px);
+            z-index: 1;
+        }
+
+        .card h2 {
+            color: #667eea;
+            font-size: 2.2em;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .card p {
+            color: #333;
+            font-size: 1.2em;
+            line-height: 1.8;
+            text-align: center;
+        }
+
+        .card-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .dot.active {
+            background: white;
+            transform: scale(1.3);
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            top: -10px;
+            animation: fall 3s linear infinite;
+            z-index: 1000;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .music-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            font-size: 1.5em;
+            z-index: 1001;
+            transition: transform 0.3s;
+        }
+
+        .music-control:hover {
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 600px) {
+            #cake-screen h1 {
+                font-size: 2em;
+            }
+            .cake {
+                width: 180px;
+                height: 120px;
+            }
+            .cake-top {
+                width: 200px;
+                height: 30px;
+            }
+            .cake-base {
+                width: 200px;
+                height: 25px;
+            }
+            .candles {
+                gap: 25px;
+                top: -65px;
+            }
+            .card h2 {
+                font-size: 1.8em;
+            }
+            .card p {
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Pantalla del pastel -->
+        <div id="cake-screen">
+            <h1>🎉 ¡Feliz Cumpleaños! 🎉</h1>
+            <div class="cake-wrapper">
+                <div class="candles">
+                    <div class="candle">
+                        <div class="flame"></div>
+                    </div>
+                    <div class="candle">
+                        <div class="flame"></div>
+                    </div>
+                    <div class="candle">
+                        <div class="flame"></div>
+                    </div>
+                </div>
+                <div class="cake">
+                    <div class="cake-top"></div>
+                </div>
+                <div class="cake-base"></div>
+            </div>
+            <div class="blow-instruction">
+                🎤 Sopla las velas para continuar
+            </div>
+            <button class="mic-button" id="mic-btn">Activar micrófono</button>
+        </div>
+
+        <!-- Pantalla de tarjetas -->
+        <div id="cards-screen">
+            <div class="card-container">
+                <div class="card active" data-index="0">
+                    <h2>🎂 ¡Feliz Cumpleaños! 🎂</h2>
+                    <p>Que este día esté lleno de alegría, amor y momentos inolvidables. ¡Eres especial y mereces lo mejor!</p>
+                </div>
+                <div class="card" data-index="1">
+                    <h2>🎈 Un año más 🎈</h2>
+                    <p>Cada año que pasa te hace más increíble. Que este nuevo ciclo esté lleno de sueños cumplidos y nuevas aventuras.</p>
+                </div>
+                <div class="card" data-index="2">
+                    <h2>🎁 Deseos especiales 🎁</h2>
+                    <p>Que la vida te regale salud, prosperidad y felicidad. Que cada día sea una oportunidad para sonreír y brillar.</p>
+                </div>
+                <div class="card" data-index="3">
+                    <h2>⭐ Brilla siempre ⭐</h2>
+                    <p>Tu luz ilumina la vida de quienes te rodean. ¡Que sigas brillando con esa energía única que te caracteriza!</p>
+                </div>
+            </div>
+            <div class="card-indicator">
+                <div class="dot active" data-index="0"></div>
+                <div class="dot" data-index="1"></div>
+                <div class="dot" data-index="2"></div>
+                <div class="dot" data-index="3"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="music-control" id="music-control">🔇</div>
+
+    <script>
+        const cakeScreen = document.getElementById('cake-screen');
+        const cardsScreen = document.getElementById('cards-screen');
+        const micBtn = document.getElementById('mic-btn');
+        const flames = document.querySelectorAll('.flame');
+        const musicControl = document.getElementById('music-control');
+        const cards = document.querySelectorAll('.card');
+        const dots = document.querySelectorAll('.dot');
+        
+        let audioContext;
+        let analyser;
+        let microphone;
+        let isListening = false;
+        let musicPlaying = false;
+        let currentCardIndex = 0;
+        let cardInterval;
+
+        // Crear confeti
+        function createConfetti() {
+            const colors = ['#ff6b9d', '#c9184a', '#ffd93d', '#667eea', '#764ba2'];
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDelay = Math.random() * 3 + 's';
+                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 5000);
+                }, i * 50);
+            }
+        }
+
+        // Cambiar tarjetas
+        function changeCard(newIndex) {
+            const currentCard = cards[currentCardIndex];
+            const newCard = cards[newIndex];
+            
+            currentCard.classList.add('exiting');
+            currentCard.classList.remove('active');
+            
+            setTimeout(() => {
+                currentCard.classList.remove('exiting');
+                newCard.classList.add('active');
+            }, 300);
+            
+            dots[currentCardIndex].classList.remove('active');
+            dots[newIndex].classList.add('active');
+            
+            currentCardIndex = newIndex;
+        }
+
+        function startCardRotation() {
+            cardInterval = setInterval(() => {
+                const nextIndex = (currentCardIndex + 1) % cards.length;
+                changeCard(nextIndex);
+            }, 4000);
+        }
+
+        // Click en indicadores
+        dots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                const index = parseInt(dot.dataset.index);
+                clearInterval(cardInterval);
+                changeCard(index);
+                startCardRotation();
+            });
+        });
+
+        // Función para soplar las velas
+        function blowCandles() {
+            flames.forEach((flame, index) => {
+                setTimeout(() => {
+                    flame.classList.add('blown');
+                }, index * 200);
+            });
+
+            setTimeout(() => {
+                createConfetti();
+                cakeScreen.style.display = 'none';
+                cardsScreen.style.display = 'block';
+                startCardRotation();
+                if (!musicPlaying) {
+                    toggleMusic();
+                }
+            }, 1000);
+        }
+
+        // Control de música
+        function toggleMusic() {
+            if (musicPlaying) {
+                musicPlaying = false;
+                musicControl.textContent = '🔇';
+            } else {
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                playBirthdaySong();
+                musicControl.textContent = '🔊';
+                musicPlaying = true;
+            }
+        }
+
+        function playBirthdaySong() {
+            const ctx = audioContext;
+            const notes = [
+                {freq: 262, duration: 0.3}, {freq: 262, duration: 0.3}, 
+                {freq: 294, duration: 0.6}, {freq: 262, duration: 0.6},
+                {freq: 349, duration: 0.6}, {freq: 330, duration: 1.2},
+                {freq: 262, duration: 0.3}, {freq: 262, duration: 0.3},
+                {freq: 294, duration: 0.6}, {freq: 262, duration: 0.6},
+                {freq: 392, duration: 0.6}, {freq: 349, duration: 1.2}
+            ];
+            
+            let time = ctx.currentTime;
+            
+            function playNote() {
+                if (!musicPlaying) return;
+                
+                notes.forEach((note) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    
+                    osc.frequency.value = note.freq;
+                    osc.type = 'sine';
+                    
+                    gain.gain.setValueAtTime(0.3, time);
+                    gain.gain.exponentialRampToValueAtTime(0.01, time + note.duration);
+                    
+                    osc.start(time);
+                    osc.stop(time + note.duration);
+                    
+                    time += note.duration;
+                });
+                
+                setTimeout(playNote, time * 1000 - ctx.currentTime * 1000 + 1000);
+            }
+            
+            playNote();
+        }
+
+        musicControl.addEventListener('click', toggleMusic);
+
+        // Activar micrófono
+        micBtn.addEventListener('click', async () => {
+            if (!isListening) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    analyser = audioContext.createAnalyser();
+                    microphone = audioContext.createMediaStreamSource(stream);
+                    microphone.connect(analyser);
+                    analyser.fftSize = 256;
+                    
+                    isListening = true;
+                    micBtn.textContent = '🎤 ¡Sopla ahora!';
+                    micBtn.style.background = '#4ade80';
+                    
+                    detectBlow();
+                } catch (err) {
+                    alert('No se pudo acceder al micrófono. Toca el botón para soplar las velas.');
+                    blowCandles();
+                }
+            }
+        });
+
+        // Detectar soplido
+        function detectBlow() {
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            
+            function check() {
+                if (!isListening) return;
+                
+                analyser.getByteFrequencyData(dataArray);
+                const average = dataArray.reduce((a, b) => a + b) / bufferLength;
+                
+                if (average > 40) {
+                    isListening = false;
+                    blowCandles();
+                    return;
+                }
+                
+                requestAnimationFrame(check);
+            }
+            
+            check();
+        }
+
+        // Permitir soplar con un clic si el micrófono no está disponible
+        setTimeout(() => {
+            if (!isListening) {
+                const originalText = micBtn.textContent;
+                micBtn.textContent = 'O toca aquí para soplar';
+                micBtn.addEventListener('click', () => {
+                    if (!isListening) {
+                        blowCandles();
+                    }
+                });
+            }
+        }, 3000);
+    </script>
+</body>
+</html>
