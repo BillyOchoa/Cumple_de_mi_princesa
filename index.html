@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>¡Feliz Cumpleaños! 🎂</title>
+    <title>Juego de Burbujas y Pastel</title>
     <style>
         * {
             margin: 0;
@@ -14,616 +14,411 @@
         body {
             font-family: 'Arial', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow-x: hidden;
+            overflow: hidden;
         }
 
-        .container {
+        #game-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #bubble-stage {
             width: 100%;
-            max-width: 500px;
-            padding: 20px;
-        }
-
-        /* Pantalla del pastel */
-        #cake-screen {
-            text-align: center;
-            animation: fadeIn 1s ease-in;
-        }
-
-        #cake-screen h1 {
-            color: white;
-            font-size: 2.5em;
-            margin-bottom: 30px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        /* --- DISEÑO DEL PASTEL MEJORADO --- */
-        
-        .cake-wrapper {
+            height: 100%;
             position: relative;
-            width: 240px;
-            height: 200px; /* Ajusta la altura total */
-            margin: 0 auto; /* Centra horizontalmente */
         }
-        
-        /* Base del pastel (plato) */
-        .cake-base {
-            width: 260px;
-            height: 25px;
-            background: #8b0000;
-            border-radius: 25px;
+
+        .bubble {
             position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            z-index: 1;
-        }
-        
-        /* Cuerpo del pastel */
-        .cake {
-            width: 220px;
-            height: 120px;
-            background: linear-gradient(180deg, #ff6b9d 0%, #c9184a 100%);
-            border-radius: 15px 15px 0 0;
-            position: absolute;
-            bottom: 25px; /* Justo encima de la base */
-            left: 50%;
-            transform: translateX(-50%);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-            z-index: 2;
-        }
-        
-        /* Decoración superior (betún) */
-        .cake-top {
-            width: 240px;
-            height: 30px;
-            background: linear-gradient(180deg, #ffd93d 0%, #f4c430 100%);
-            border-radius: 50% 50% 0 0;
-            position: absolute;
-            top: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 3;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-        }
-        
-        /* Contenedor de velas */
-        .candles {
-            position: absolute;
-            top: -30px; /* Justo encima del betún */
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 40px;
-            z-index: 4;
-        }
-        
-        /* Vela individual */
-        .candle {
-            width: 10px;
-            height: 50px;
-            background: linear-gradient(180deg, #ffffff 0%, #e8e8e8 100%);
-            border-radius: 5px 5px 0 0;
-            position: relative;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-        
-        .candle::before {
-            content: '';
-            position: absolute;
-            top: -5px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 12px;
-            height: 8px;
-            background: #ff6b9d;
-            border-radius: 50% 50% 0 0;
-        }
-        
-        /* Llama de la vela */
-        .flame {
-            position: absolute;
-            top: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 15px;
-            height: 20px;
-            background: radial-gradient(circle, #ffd93d 0%, #ff6b35 60%, #ff4500 100%);
-            border-radius: 50% 50% 20% 20%;
-            animation: flicker 0.3s infinite alternate;
-            box-shadow: 0 0 15px rgba(255, 200, 50, 0.8);
-        }
-        
-        .flame.blown {
-            animation: blowOut 0.5s forwards;
-        }
-
-        @keyframes flicker {
-            0% { 
-                transform: translateX(-50%) scaleY(1);
-                opacity: 1;
-            }
-            100% { 
-                transform: translateX(-50%) scaleY(1.15);
-                opacity: 0.9;
-            }
-        }
-
-        @keyframes blowOut {
-            0% { 
-                opacity: 1;
-                transform: translateX(-50%) scale(1);
-            }
-            50% {
-                transform: translateX(-50%) scale(1.3) translateX(-10px);
-                opacity: 0.5;
-            }
-            100% { 
-                opacity: 0;
-                transform: translateX(-50%) scale(0);
-            }
-        }
-
-        .blow-instruction {
-            color: white;
-            font-size: 1.2em;
-            margin-top: 70px; /* Aumenta un poco el espacio */
-            padding: 15px 25px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            display: inline-block;
-            margin-left: auto;
-            margin-right: auto;
-            text-align: center;
-        }
-
-        .mic-button {
-            margin-top: 25px;
-            padding: 15px 35px;
-            font-size: 1.1em;
-            background: #ffd93d;
-            border: none;
-            border-radius: 30px;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            transition: all 0.3s;
-            font-weight: bold;
-        }
-
-        .mic-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
-        }
-
-        .mic-button:active {
-            transform: translateY(-1px);
-        }
-
-        /* Pantalla de tarjetas */
-        #cards-screen {
-            display: none;
-            animation: fadeIn 1s ease-in;
-            position: relative;
-            min-height: 400px;
-        }
-
-        .card-container {
-            position: relative;
-            width: 100%;
-            height: 450px;
-        }
-
-        .card {
-            background: white;
-            border-radius: 25px;
-            padding: 40px 30px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-            position: absolute;
-            width: 100%;
-            top: 0;
-            left: 0;
-            opacity: 0;
-            transform: scale(0.9) translateY(30px);
-            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-
-        .card.active {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-            z-index: 2;
-        }
-
-        .card.exiting {
-            opacity: 0;
-            transform: scale(0.9) translateY(-30px);
-            z-index: 1;
-        }
-
-        .card h2 {
-            color: #667eea;
-            font-size: 2.2em;
-            margin-bottom: 25px;
-            text-align: center;
-        }
-
-        .card p {
-            color: #333;
-            font-size: 1.2em;
-            line-height: 1.8;
-            text-align: center;
-        }
-
-        .card-indicator {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 30px;
-        }
-
-        .dot {
-            width: 12px;
-            height: 12px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.5);
-            transition: all 0.3s;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2));
+            border: 2px solid rgba(255, 255, 255, 0.5);
             cursor: pointer;
+            transition: transform 0.2s;
+            animation: float 3s ease-in-out infinite;
         }
 
-        .dot.active {
-            background: white;
-            transform: scale(1.3);
-        }
-
-        .confetti {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            top: -10px;
-            animation: fall 3s linear infinite;
-            z-index: 1000;
-        }
-
-        @keyframes fall {
-            to {
-                transform: translateY(100vh) rotate(360deg);
-            }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .music-control {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: white;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-            font-size: 1.5em;
-            z-index: 1001;
-            transition: transform 0.3s;
-        }
-
-        .music-control:hover {
+        .bubble:hover {
             transform: scale(1.1);
         }
 
-        @media (max-width: 600px) {
-            #cake-screen h1 {
-                font-size: 2em;
-            }
-            .cake {
-                width: 180px;
-                height: 120px;
-            }
-            .cake-top {
-                width: 200px;
-                height: 30px;
-            }
-            .cake-base {
-                width: 200px;
-                height: 25px;
-            }
-            .candles {
-                gap: 25px;
-                top: -45px;
-            }
-            .card h2 {
-                font-size: 1.8em;
-            }
-            .card p {
-                font-size: 1.1em;
-            }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes pop {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.7; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+
+        .popping {
+            animation: pop 0.3s ease-out forwards;
+        }
+
+        #counter {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        #cake-stage {
+            display: none;
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background: linear-gradient(135deg, #a8b5d6 0%, #c9b9d4 100%);
+        }
+
+        #cake-stage.active {
+            display: flex;
+        }
+
+        .cake-container {
+            position: relative;
+            width: 450px;
+            height: 380px;
+            margin-bottom: 30px;
+        }
+
+        .cake-base {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 420px;
+            height: 20px;
+            background: linear-gradient(to bottom, #c8c8c8 0%, #9e9e9e 50%, #8a8a8a 100%);
+            border-radius: 50%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+        }
+
+        .cake-layer {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 380px;
+            height: 150px;
+            background: linear-gradient(180deg, #9d6b1a 0%, #8b5a14 50%, #6d4510 100%);
+            border-radius: 0;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .cake-layer::before {
+            display: none;
+        }
+
+        .cake-layer::after {
+            display: none;
+        }
+
+        .frosting {
+            position: absolute;
+            top: -50px;
+            left: 0;
+            right: 0;
+            height: 55px;
+            background: #ffb6d9;
+            border-radius: 190px 190px 0 0 / 45px 45px 0 0;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .frosting::after {
+            display: none;
+        }
+
+        .candle {
+            position: absolute;
+            top: -55px;
+            width: 20px;
+            height: 52px;
+            background: linear-gradient(to bottom, #c62828 0%, #b71c1c 100%);
+            border-radius: 3px 3px 0 0;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+            z-index: 5;
+        }
+
+        .candle::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #7f0000;
+            border-radius: 3px 3px 0 0;
+        }
+
+        .candle:nth-child(1) { 
+            left: 50%;
+            transform: translateX(-50px);
+        }
+        .candle:nth-child(2) { 
+            left: 50%;
+            transform: translateX(-10px);
+        }
+        .candle:nth-child(3) { 
+            left: 50%;
+            transform: translateX(30px);
+        }
+
+        .flame {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 22px;
+            height: 32px;
+            background: radial-gradient(ellipse at center, #ffeb3b 0%, #ffa726 40%, #ff6f00 100%);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            filter: blur(1px);
+            animation: flicker 0.15s ease-in-out infinite;
+        }
+
+        .flame {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 30px;
+            background: radial-gradient(ellipse at center, #FFF700 0%, #FFA500 50%, #FF4500 100%);
+            border-radius: 50% 50% 20% 20%;
+            filter: blur(1px);
+            animation: flicker 0.2s ease-in-out infinite;
+        }
+
+        .flame.blown {
+            animation: blowOut 0.5s ease-out forwards;
+        }
+
+        @keyframes flicker {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.1, 0.9); }
+        }
+
+        @keyframes blowOut {
+            0% { opacity: 1; transform: translateX(-50%) scale(1); }
+            100% { opacity: 0; transform: translateX(-50%) scale(0.5, 2); }
+        }
+
+        #instructions {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px 40px;
+            border-radius: 20px;
+            font-size: 20px;
+            color: #667eea;
+            text-align: center;
+            max-width: 400px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        #mic-indicator {
+            margin-top: 20px;
+            padding: 10px 30px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            font-size: 16px;
+            color: #764ba2;
+        }
+
+        .success-message {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px 60px;
+            border-radius: 30px;
+            font-size: 32px;
+            color: #667eea;
+            text-align: center;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .success-message.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Pantalla del pastel -->
-        <div id="cake-screen">
-            <h1>🎉 ¡Feliz Cumpleaños! 🎉</h1>
-            <div class="cake-wrapper">
-                <!-- Base del pastel -->
+    <div id="game-container">
+        <div id="bubble-stage">
+            <div id="counter">Burbujas: 22</div>
+        </div>
+
+        <div id="cake-stage">
+            <div class="cake-container">
                 <div class="cake-base"></div>
-                <!-- Cuerpo del pastel -->
-                <div class="cake">
-                    <!-- Betún superior -->
-                    <div class="cake-top"></div>
-                    <!-- Velas -->
-                    <div class="candles">
-                        <div class="candle">
-                            <div class="flame"></div>
-                        </div>
-                        <div class="candle">
-                            <div class="flame"></div>
-                        </div>
-                        <div class="candle">
-                            <div class="flame"></div>
-                        </div>
+                <div class="cake-layer">
+                    <div class="frosting"></div>
+                    <div class="candle">
+                        <div class="flame"></div>
+                    </div>
+                    <div class="candle">
+                        <div class="flame"></div>
+                    </div>
+                    <div class="candle">
+                        <div class="flame"></div>
                     </div>
                 </div>
             </div>
-                <div class="cake">
-                    <div class="cake-top"></div>
-                </div>
-                <div class="cake-base"></div>
+            <div id="instructions">
+                🎤 ¡Sopla las velas usando tu micrófono!
+                <div id="mic-indicator">Nivel: <span id="volume">0</span>%</div>
             </div>
-            <div class="blow-instruction">
-                🎤 Sopla las velas para continuar
-            </div>
-            <button class="mic-button" id="mic-btn">Activar micrófono</button>
-        </div>
-
-        <!-- Pantalla de tarjetas -->
-        <div id="cards-screen">
-            <div class="card-container">
-                <div class="card active" data-index="0">
-                    <h2>🎂 ¡Feliz Cumpleaños! 🎂</h2>
-                    <p>Que este día esté lleno de alegría, amor y momentos inolvidables. ¡Eres especial y mereces lo mejor!</p>
-                </div>
-                <div class="card" data-index="1">
-                    <h2>🎈 Un año más 🎈</h2>
-                    <p>Cada año que pasa te hace más increíble. Que este nuevo ciclo esté lleno de sueños cumplidos y nuevas aventuras.</p>
-                </div>
-                <div class="card" data-index="2">
-                    <h2>🎁 Deseos especiales 🎁</h2>
-                    <p>Que la vida te regale salud, prosperidad y felicidad. Que cada día sea una oportunidad para sonreír y brillar.</p>
-                </div>
-                <div class="card" data-index="3">
-                    <h2>⭐ Brilla siempre ⭐</h2>
-                    <p>Tu luz ilumina la vida de quienes te rodean. ¡Que sigas brillando con esa energía única que te caracteriza!</p>
-                </div>
-            </div>
-            <div class="card-indicator">
-                <div class="dot active" data-index="0"></div>
-                <div class="dot" data-index="1"></div>
-                <div class="dot" data-index="2"></div>
-                <div class="dot" data-index="3"></div>
+            <div class="success-message" id="success">
+                🎉 ¡Felicidades! 🎉<br>
+                <span style="font-size: 24px; margin-top: 10px; display: block;">¡Completaste el desafío!</span>
             </div>
         </div>
     </div>
 
-    <div class="music-control" id="music-control">🔇</div>
-
     <script>
-        const cakeScreen = document.getElementById('cake-screen');
-        const cardsScreen = document.getElementById('cards-screen');
-        const micBtn = document.getElementById('mic-btn');
-        const flames = document.querySelectorAll('.flame');
-        const musicControl = document.getElementById('music-control');
-        const cards = document.querySelectorAll('.card');
-        const dots = document.querySelectorAll('.dot');
-        
+        let bubblesPopped = 0;
+        const totalBubbles = 22;
+        let candlesBlown = 0;
+        const totalCandles = 3;
         let audioContext;
         let analyser;
         let microphone;
-        let isListening = false;
-        let musicPlaying = false;
-        let currentCardIndex = 0;
-        let cardInterval;
 
-        // Crear confeti
-        function createConfetti() {
-            const colors = ['#ff6b9d', '#c9184a', '#ffd93d', '#667eea', '#764ba2'];
-            for (let i = 0; i < 50; i++) {
+        // Crear burbujas
+        function createBubbles() {
+            const stage = document.getElementById('bubble-stage');
+            
+            for (let i = 0; i < totalBubbles; i++) {
                 setTimeout(() => {
-                    const confetti = document.createElement('div');
-                    confetti.className = 'confetti';
-                    confetti.style.left = Math.random() * 100 + '%';
-                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                    confetti.style.animationDelay = Math.random() * 3 + 's';
-                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
-                    document.body.appendChild(confetti);
+                    const bubble = document.createElement('div');
+                    bubble.className = 'bubble';
                     
-                    setTimeout(() => confetti.remove(), 5000);
+                    const size = Math.random() * 60 + 40;
+                    bubble.style.width = size + 'px';
+                    bubble.style.height = size + 'px';
+                    
+                    // Calcular posiciones usando porcentajes
+                    const leftPercent = Math.random() * 90 + 5; // 5% a 95%
+                    const topPercent = Math.random() * 70 + 15; // 15% a 85%
+                    
+                    bubble.style.left = leftPercent + '%';
+                    bubble.style.top = topPercent + '%';
+                    
+                    bubble.style.animationDelay = Math.random() * 2 + 's';
+                    bubble.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    
+                    const colors = ['rgba(255, 182, 193, 0.6)', 'rgba(173, 216, 230, 0.6)', 'rgba(255, 255, 153, 0.6)', 
+                                   'rgba(221, 160, 221, 0.6)', 'rgba(152, 251, 152, 0.6)'];
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    bubble.style.background = `radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), ${color})`;
+                    
+                    bubble.addEventListener('click', popBubble);
+                    stage.appendChild(bubble);
                 }, i * 50);
             }
         }
 
-        // Cambiar tarjetas
-        function changeCard(newIndex) {
-            const currentCard = cards[currentCardIndex];
-            const newCard = cards[newIndex];
+        function popBubble(e) {
+            const bubble = e.target;
+            bubble.classList.add('popping');
+            bubblesPopped++;
             
-            currentCard.classList.add('exiting');
-            currentCard.classList.remove('active');
+            document.getElementById('counter').textContent = `Burbujas: ${totalBubbles - bubblesPopped}`;
             
             setTimeout(() => {
-                currentCard.classList.remove('exiting');
-                newCard.classList.add('active');
+                bubble.remove();
+                
+                if (bubblesPopped === totalBubbles) {
+                    showCake();
+                }
             }, 300);
-            
-            dots[currentCardIndex].classList.remove('active');
-            dots[newIndex].classList.add('active');
-            
-            currentCardIndex = newIndex;
         }
 
-        function startCardRotation() {
-            cardInterval = setInterval(() => {
-                const nextIndex = (currentCardIndex + 1) % cards.length;
-                changeCard(nextIndex);
-            }, 4000);
+        function showCake() {
+            document.getElementById('bubble-stage').style.display = 'none';
+            document.getElementById('cake-stage').classList.add('active');
+            initMicrophone();
         }
 
-        // Click en indicadores
-        dots.forEach(dot => {
-            dot.addEventListener('click', () => {
-                const index = parseInt(dot.dataset.index);
-                clearInterval(cardInterval);
-                changeCard(index);
-                startCardRotation();
-            });
-        });
-
-        // Función para soplar las velas
-        function blowCandles() {
-            flames.forEach((flame, index) => {
-                setTimeout(() => {
-                    flame.classList.add('blown');
-                }, index * 200);
-            });
-
-            setTimeout(() => {
-                createConfetti();
-                cakeScreen.style.display = 'none';
-                cardsScreen.style.display = 'block';
-                startCardRotation();
-                if (!musicPlaying) {
-                    toggleMusic();
-                }
-            }, 1000);
-        }
-
-        // Control de música
-        function toggleMusic() {
-            if (musicPlaying) {
-                musicPlaying = false;
-                musicControl.textContent = '🔇';
-            } else {
-                if (!audioContext) {
-                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                }
-                playBirthdaySong();
-                musicControl.textContent = '🔊';
-                musicPlaying = true;
-            }
-        }
-
-        function playBirthdaySong() {
-            const ctx = audioContext;
-            const notes = [
-                {freq: 262, duration: 0.3}, {freq: 262, duration: 0.3}, 
-                {freq: 294, duration: 0.6}, {freq: 262, duration: 0.6},
-                {freq: 349, duration: 0.6}, {freq: 330, duration: 1.2},
-                {freq: 262, duration: 0.3}, {freq: 262, duration: 0.3},
-                {freq: 294, duration: 0.6}, {freq: 262, duration: 0.6},
-                {freq: 392, duration: 0.6}, {freq: 349, duration: 1.2}
-            ];
-            
-            let time = ctx.currentTime;
-            
-            function playNote() {
-                if (!musicPlaying) return;
+        async function initMicrophone() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                microphone = audioContext.createMediaStreamSource(stream);
                 
-                notes.forEach((note) => {
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-                    
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
-                    
-                    osc.frequency.value = note.freq;
-                    osc.type = 'sine';
-                    
-                    gain.gain.setValueAtTime(0.3, time);
-                    gain.gain.exponentialRampToValueAtTime(0.01, time + note.duration);
-                    
-                    osc.start(time);
-                    osc.stop(time + note.duration);
-                    
-                    time += note.duration;
-                });
+                analyser.fftSize = 256;
+                microphone.connect(analyser);
                 
-                setTimeout(playNote, time * 1000 - ctx.currentTime * 1000 + 1000);
+                detectBlow();
+            } catch (err) {
+                document.getElementById('instructions').innerHTML = 
+                    '⚠️ No se pudo acceder al micrófono.<br>Por favor, permite el acceso.';
             }
-            
-            playNote();
         }
 
-        musicControl.addEventListener('click', toggleMusic);
-
-        // Activar micrófono
-        micBtn.addEventListener('click', async () => {
-            if (!isListening) {
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                    analyser = audioContext.createAnalyser();
-                    microphone = audioContext.createMediaStreamSource(stream);
-                    microphone.connect(analyser);
-                    analyser.fftSize = 256;
-                    
-                    isListening = true;
-                    micBtn.textContent = '🎤 ¡Sopla ahora!';
-                    micBtn.style.background = '#4ade80';
-                    
-                    detectBlow();
-                } catch (err) {
-                    alert('No se pudo acceder al micrófono. Toca el botón para soplar las velas.');
-                    blowCandles();
-                }
-            }
-        });
-
-        // Detectar soplido
         function detectBlow() {
-            const bufferLength = analyser.frequencyBinCount;
-            const dataArray = new Uint8Array(bufferLength);
+            const dataArray = new Uint8Array(analyser.frequencyBinCount);
             
             function check() {
-                if (!isListening) return;
-                
                 analyser.getByteFrequencyData(dataArray);
-                const average = dataArray.reduce((a, b) => a + b) / bufferLength;
                 
-                if (average > 40) {
-                    isListening = false;
-                    blowCandles();
-                    return;
+                const average = dataArray.reduce((a, b) => a + b) / dataArray.length;
+                const volume = Math.min(100, Math.round((average / 128) * 100));
+                
+                document.getElementById('volume').textContent = volume;
+                
+                if (volume > 30 && candlesBlown < totalCandles) {
+                    blowCandle();
                 }
                 
-                requestAnimationFrame(check);
+                if (candlesBlown < totalCandles) {
+                    requestAnimationFrame(check);
+                }
             }
             
             check();
         }
 
-        // Permitir soplar con un clic si el micrófono no está disponible
-        setTimeout(() => {
-            if (!isListening) {
-                const originalText = micBtn.textContent;
-                micBtn.textContent = 'O toca aquí para soplar';
-                micBtn.addEventListener('click', () => {
-                    if (!isListening) {
-                        blowCandles();
-                    }
-                });
+        function blowCandle() {
+            const flames = document.querySelectorAll('.flame');
+            if (candlesBlown < flames.length) {
+                flames[candlesBlown].classList.add('blown');
+                candlesBlown++;
+                
+                if (candlesBlown === totalCandles) {
+                    setTimeout(() => {
+                        document.getElementById('success').classList.add('active');
+                    }, 500);
+                }
             }
-        }, 3000);
+        }
+
+        // Inicializar juego
+        createBubbles();
     </script>
 </body>
 </html>
