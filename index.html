@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎉🎉✨Todo amor 🎇🎉🎉</title>
+    <title>Juego de Burbujas y Pastel</title>
     <style>
         * {
             margin: 0;
@@ -53,9 +53,19 @@
         }
 
         @keyframes pop {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.3); opacity: 0.7; }
-            100% { transform: scale(0); opacity: 0; }
+            0% { 
+                transform: scale(1); 
+                opacity: 1; 
+            }
+            50% { 
+                transform: scale(1.5); 
+                opacity: 0.8;
+                background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 1), rgba(255, 200, 200, 0.8));
+            }
+            100% { 
+                transform: scale(0.2); 
+                opacity: 0; 
+            }
         }
 
         .popping {
@@ -317,13 +327,13 @@
                     const bubble = document.createElement('div');
                     bubble.className = 'bubble';
                     
-                    const size = Math.random() * 60 + 40;
+                    const size = Math.random() * 70 + 50;
                     bubble.style.width = size + 'px';
                     bubble.style.height = size + 'px';
                     
-                    // Calcular posiciones usando porcentajes
-                    const leftPercent = Math.random() * 90 + 5; // 5% a 95%
-                    const topPercent = Math.random() * 70 + 15; // 15% a 85%
+                    // Calcular posiciones más centradas para móviles
+                    const leftPercent = Math.random() * 70 + 15; // 15% a 85% (más centrado)
+                    const topPercent = Math.random() * 60 + 20; // 20% a 80% (más centrado)
                     
                     bubble.style.left = leftPercent + '%';
                     bubble.style.top = topPercent + '%';
@@ -337,6 +347,7 @@
                     bubble.style.background = `radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), ${color})`;
                     
                     bubble.addEventListener('click', popBubble);
+                    bubble.addEventListener('touchstart', popBubble);
                     stage.appendChild(bubble);
                 }, i * 50);
             }
@@ -392,7 +403,8 @@
                 
                 document.getElementById('volume').textContent = volume;
                 
-                if (volume > 30 && candlesBlown < totalCandles) {
+                // Ajustado a 50% para facilitar el soplado
+                if (volume > 50 && candlesBlown < totalCandles) {
                     blowCandle();
                 }
                 
