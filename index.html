@@ -42,8 +42,10 @@
 
         .cake-wrapper {
             position: relative;
-            display: inline-block;
-            margin: 0 auto;
+            display: flex;             /* Cambio a flex para centrar mejor */
+            flex-direction: column;    /* Apilar elementos verticalmente */
+            align-items: center;       /* Centrado horizontal perfecto */
+            margin-top: 50px; 
         }
 
         /* Base del pastel */
@@ -55,6 +57,7 @@
             position: relative;
             z-index: 1;
             box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            margin-top: -5px;  /* <--- CLAVE: Sube la base para pegarla al cuerpo */
         }
 
         /* Cuerpo del pastel */
@@ -65,8 +68,8 @@
             border-radius: 15px 15px 0 0;
             position: relative;
             z-index: 2;
-            margin: 0 auto;
             box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            /* Quitamos el margin: 0 auto porque el wrapper ya centra */
         }
 
         /* Decoración superior del pastel */
@@ -86,13 +89,14 @@
         /* Velas */
         .candles {
             position: absolute;
-            top: -75px;
+            top: -45px;       /* <--- CLAVE: Antes -75px (flotaban). Ahora tocan el betún */
             left: 50%;
             transform: translateX(-50%);
             display: flex;
             gap: 35px;
             z-index: 4;
         }
+
 
         .candle {
             width: 12px;
@@ -326,7 +330,7 @@
             }
             .candles {
                 gap: 25px;
-                top: -65px;
+                top: -45px;
             }
             .card h2 {
                 font-size: 1.8em;
