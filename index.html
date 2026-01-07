@@ -146,7 +146,7 @@
 
         .candle {
             position: absolute;
-            top: -55px;
+            top: 5px;
             width: 20px;
             height: 52px;
             background: linear-gradient(to bottom, #c62828 0%, #b71c1c 100%);
@@ -166,15 +166,15 @@
             border-radius: 3px 3px 0 0;
         }
 
-        .candle:nth-child(1) { 
+        .candle-1 { 
             left: 50%;
-            transform: translateX(30px);
+            transform: translateX(-50px);
         }
-        .candle:nth-child(2) { 
+        .candle-2 { 
             left: 50%;
-            transform: translateX(30px);
+            transform: translateX(-10px);
         }
-        .candle:nth-child(3) { 
+        .candle-3 { 
             left: 50%;
             transform: translateX(30px);
         }
@@ -275,15 +275,16 @@
             <div class="cake-container">
                 <div class="cake-base"></div>
                 <div class="cake-layer">
-                    <div class="frosting"></div>
-                    <div class="candle">
-                        <div class="flame"></div>
-                    </div>
-                    <div class="candle">
-                        <div class="flame"></div>
-                    </div>
-                    <div class="candle">
-                        <div class="flame"></div>
+                    <div class="frosting">
+                        <div class="candle candle-1">
+                            <div class="flame"></div>
+                        </div>
+                        <div class="candle candle-2">
+                            <div class="flame"></div>
+                        </div>
+                        <div class="candle candle-3">
+                            <div class="flame"></div>
+                        </div>
                     </div>
                 </div>
             </div>
