@@ -111,6 +111,7 @@
             font-weight: bold;
             color: #667eea;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 100;
         }
 
         #cake-stage {
@@ -125,6 +126,157 @@
 
         #cake-stage.active {
             display: flex;
+        }
+
+        .cake-container {
+            position: relative;
+            width: 90vw;
+            max-width: 400px;
+            height: 300px;
+            margin-bottom: 30px;
+        }
+
+        .cake-plate {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 15px;
+            background: linear-gradient(to bottom, #d0d0d0, #a0a0a0);
+            border-radius: 50%;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .cake-body {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85%;
+            height: 130px;
+            background: linear-gradient(180deg, #a67c3a 0%, #8b5f25 100%);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .cake-frosting {
+            position: absolute;
+            bottom: 145px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85%;
+            height: 50px;
+            background: #ffb6d9;
+            border-radius: 200px 200px 0 0 / 50px 50px 0 0;
+            overflow: visible;
+        }
+
+        .candle {
+            position: absolute;
+            width: 16px;
+            height: 45px;
+            background: linear-gradient(to bottom, #d32f2f, #b71c1c);
+            border-radius: 3px 3px 0 0;
+            bottom: 20px;
+        }
+
+        .candle::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #7f0000;
+            border-radius: 3px 3px 0 0;
+        }
+
+        .candle-left {
+            left: 25%;
+            transform: translateX(-50%);
+        }
+
+        .candle-center {
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .candle-right {
+            left: 75%;
+            transform: translateX(-50%);
+        }
+
+        .flame {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 16px;
+            height: 25px;
+            background: radial-gradient(ellipse at center, #fff700 0%, #ffa500 50%, #ff4500 100%);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            filter: blur(1px);
+            animation: flicker 0.2s ease-in-out infinite;
+        }
+
+        .flame.blown {
+            animation: blowOut 0.5s ease-out forwards;
+        }
+
+        @keyframes flicker {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.1, 0.9); }
+        }
+
+        @keyframes blowOut {
+            0% { opacity: 1; transform: translateX(-50%) scale(1); }
+            100% { opacity: 0; transform: translateX(-50%) scale(0.5, 2); }
+        }
+
+        #instructions {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px 40px;
+            border-radius: 20px;
+            font-size: 20px;
+            color: #667eea;
+            text-align: center;
+            max-width: 400px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        #mic-indicator {
+            margin-top: 20px;
+            padding: 10px 30px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            font-size: 16px;
+            color: #764ba2;
+        }
+
+        .success-message {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px 60px;
+            border-radius: 30px;
+            font-size: 32px;
+            color: #667eea;
+            text-align: center;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.5s ease-out;
+            z-index: 1000;
+        }
+
+        .success-message.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
         }
 
         #scrapbook-stage {
@@ -232,6 +384,8 @@
             font-size: 16px;
             font-family: 'Arial', sans-serif;
             resize: vertical;
+            -webkit-user-select: text;
+            user-select: text;
         }
 
         .page-content textarea:focus {
@@ -279,190 +433,42 @@
             font-size: 24px;
             margin-bottom: 10px;
         }
-
-        .cake-container {
-            position: relative;
-            width: 90%;
-            max-width: 450px;
-            height: 380px;
-            margin-bottom: 30px;
-        }
-
-        .cake-base {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 420px;
-            height: 20px;
-            background: linear-gradient(to bottom, #c8c8c8 0%, #9e9e9e 50%, #8a8a8a 100%);
-            border-radius: 50%;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
-        }
-
-        .cake-layer {
-            position: absolute;
-            bottom: 50px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            max-width: 380px;
-            height: 150px;
-            background: linear-gradient(180deg, #9d6b1a 0%, #8b5a14 50%, #6d4510 100%);
-            border-radius: 0;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        .cake-layer::before {
-            display: none;
-        }
-
-        .cake-layer::after {
-            display: none;
-        }
-
-        .frosting {
-            position: relative;
-            top: -50px;
-            left: 0;
-            right: 0;
-            height: 55px;
-            background: #ffb6d9;
-            border-radius: 190px 190px 0 0 / 45px 45px 0 0;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
-        }
-
-        .frosting::after {
-            display: none;
-        }
-
-        .candle {
-            position: absolute;
-            top: 8px;
-            width: 18px;
-            height: 40px;
-            background: linear-gradient(to bottom, #c62828 0%, #b71c1c 100%);
-            border-radius: 3px 3px 0 0;
-            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
-            z-index: 10;
-        }
-
-        .candle::before {
-            content: '';
-            position: absolute;
-            top: -4px;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: #7f0000;
-            border-radius: 3px 3px 0 0;
-        }
-
-        .candle-1 { 
-            left: 50%;
-            transform: translateX(-50px);
-        }
-        .candle-2 { 
-            left: 50%;
-            transform: translateX(-10px);
-        }
-        .candle-3 { 
-            left: 50%;
-            transform: translateX(30px);
-        }
-
-        .flame {
-            position: absolute;
-            top: -28px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 18px;
-            height: 28px;
-            background: radial-gradient(ellipse at center, #ffeb3b 0%, #ffa726 40%, #ff6f00 100%);
-            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-            filter: blur(1px);
-            animation: flicker 0.15s ease-in-out infinite;
-        }
-
-        .flame {
-            position: absolute;
-            top: -25px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 20px;
-            height: 30px;
-            background: radial-gradient(ellipse at center, #FFF700 0%, #FFA500 50%, #FF4500 100%);
-            border-radius: 50% 50% 20% 20%;
-            filter: blur(1px);
-            animation: flicker 0.2s ease-in-out infinite;
-        }
-
-        .flame.blown {
-            animation: blowOut 0.5s ease-out forwards;
-        }
-
-        @keyframes flicker {
-            0%, 100% { transform: translateX(-50%) scale(1); }
-            50% { transform: translateX(-50%) scale(1.1, 0.9); }
-        }
-
-        @keyframes blowOut {
-            0% { opacity: 1; transform: translateX(-50%) scale(1); }
-            100% { opacity: 0; transform: translateX(-50%) scale(0.5, 2); }
-        }
-
-        #instructions {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 20px 40px;
-            border-radius: 20px;
-            font-size: 20px;
-            color: #667eea;
-            text-align: center;
-            max-width: 400px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        #mic-indicator {
-            margin-top: 20px;
-            padding: 10px 30px;
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 15px;
-            font-size: 16px;
-            color: #764ba2;
-        }
-
-        .success-message {
-            display: none;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(255, 255, 255, 0.95);
-            padding: 40px 60px;
-            border-radius: 30px;
-            font-size: 32px;
-            color: #667eea;
-            text-align: center;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        .success-message.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
-            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-        }
     </style>
 </head>
 <body>
     <div id="game-container">
         <div id="bubble-stage">
             <div id="counter">Burbujas: 22</div>
-            <div id="scrapbook-stage">
+        </div>
+
+        <div id="cake-stage">
+            <div class="cake-container">
+                <div class="cake-plate"></div>
+                <div class="cake-body"></div>
+                <div class="cake-frosting">
+                    <div class="candle candle-left">
+                        <div class="flame"></div>
+                    </div>
+                    <div class="candle candle-center">
+                        <div class="flame"></div>
+                    </div>
+                    <div class="candle candle-right">
+                        <div class="flame"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="instructions">
+                🎤 ¡Sopla las velas usando tu micrófono!
+                <div id="mic-indicator">Nivel: <span id="volume">0</span>%</div>
+            </div>
+        </div>
+
+        <div class="success-message" id="success">
+            🎉 ¡Felicidades! 🎉<br>
+            <span style="font-size: 24px; margin-top: 10px; display: block;">¡Completaste el desafío!</span>
+        </div>
+
+        <div id="scrapbook-stage">
             <div class="scrapbook-container">
                 <div class="scrapbook-header">
                     <h1>📖 Mi Scrapbook de Cumpleaños</h1>
@@ -481,34 +487,6 @@
         </div>
     </div>
 
-        <div id="cake-stage">
-            <div class="cake-container">
-                <div class="cake-base"></div>
-                <div class="cake-layer">
-                    <div class="frosting">
-                        <div class="candle candle-1">
-                            <div class="flame"></div>
-                        </div>
-                        <div class="candle candle-2">
-                            <div class="flame"></div>
-                        </div>
-                        <div class="candle candle-3">
-                            <div class="flame"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="instructions">
-                🎤 ¡Sopla las velas usando tu micrófono!
-                <div id="mic-indicator">Nivel: <span id="volume">0</span>%</div>
-            </div>
-            <div class="success-message" id="success">
-                🎉 ¡Felicidades! 🎉<br>
-                <span style="font-size: 24px; margin-top: 10px; display: block;">¡Completaste el desafío!</span>
-            </div>
-        </div>
-    </div>
-
     <script>
         let bubblesPopped = 0;
         const totalBubbles = 22;
@@ -517,8 +495,7 @@
         let audioContext;
         let analyser;
         let microphone;
-        let birthdaySong;
-        let songStarted = false;
+        let birthdayAudio;
         let pageCount = 0;
 
         // Crear burbujas
@@ -534,9 +511,8 @@
                     bubble.style.width = size + 'px';
                     bubble.style.height = size + 'px';
                     
-                    // Calcular posiciones más centradas para móviles
-                    const leftPercent = Math.random() * 70 + 15; // 15% a 85% (más centrado)
-                    const topPercent = Math.random() * 60 + 20; // 20% a 80% (más centrado)
+                    const leftPercent = Math.random() * 70 + 15;
+                    const topPercent = Math.random() * 60 + 20;
                     
                     bubble.style.left = leftPercent + '%';
                     bubble.style.top = topPercent + '%';
@@ -582,11 +558,10 @@
             document.getElementById('bubble-stage').style.display = 'none';
             document.getElementById('cake-stage').classList.add('active');
             
-            // Crear el audio de cumpleaños
-            birthdaySong = new Audio();
-            birthdaySong.src = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3';
-            birthdaySong.loop = true;
-            birthdaySong.volume = 0.5;
+            // Crear audio de cumpleaños
+            birthdayAudio = new Audio('https://actions.google.com/sounds/v1/musical/happy_birthday.ogg');
+            birthdayAudio.loop = true;
+            birthdayAudio.volume = 0.5;
             
             initMicrophone();
         }
@@ -603,6 +578,7 @@
                 
                 detectBlow();
             } catch (err) {
+                console.error('Error al acceder al micrófono:', err);
                 document.getElementById('instructions').innerHTML = 
                     '⚠️ No se pudo acceder al micrófono.<br>Por favor, permite el acceso.';
             }
@@ -619,7 +595,6 @@
                 
                 document.getElementById('volume').textContent = volume;
                 
-                // Ajustado a 50% para facilitar el soplado
                 if (volume > 50 && candlesBlown < totalCandles) {
                     blowCandle();
                 }
@@ -634,48 +609,42 @@
 
         function blowCandle() {
             const flames = document.querySelectorAll('.flame');
-            if (candlesBlown < flames.length) {
-                // Reproducir canción al soplar la primera vela
-                if (candlesBlown === 0 && !songStarted) {
-                    birthdaySong.play().catch(err => console.log('Error reproduciendo audio:', err));
-                    songStarted = true;
+            if (candlesBlown < flames.length && !flames[candlesBlown].classList.contains('blown')) {
+                
+                // Reproducir música al soplar la primera vela
+                if (candlesBlown === 0 && birthdayAudio) {
+                    birthdayAudio.play().catch(err => console.log('Error de audio:', err));
                 }
                 
                 flames[candlesBlown].classList.add('blown');
                 candlesBlown++;
                 
                 if (candlesBlown === totalCandles) {
-                    const successMsg = document.getElementById('success');
-                    successMsg.classList.add('active');
-                    
-                    // Detener la canción cuando se completa
-                    if (birthdaySong) {
-                        birthdaySong.pause();
-                        birthdaySong.currentTime = 0;
+                    // Detener música
+                    if (birthdayAudio) {
+                        setTimeout(() => {
+                            birthdayAudio.pause();
+                            birthdayAudio.currentTime = 0;
+                        }, 500);
                     }
                     
-                    // Mostrar scrapbook después de 3 segundos
+                    // Mostrar mensaje
+                    document.getElementById('success').classList.add('active');
+                    
+                    // Ir al scrapbook
                     setTimeout(() => {
-                        showScrapbook();
+                        document.getElementById('cake-stage').style.display = 'none';
+                        document.getElementById('success').classList.remove('active');
+                        document.getElementById('scrapbook-stage').classList.add('active');
                     }, 3000);
                 }
             }
-        }
-
-        function showScrapbook() {
-            const cakeStage = document.getElementById('cake-stage');
-            const scrapbookStage = document.getElementById('scrapbook-stage');
-            
-            cakeStage.classList.remove('active');
-            cakeStage.style.display = 'none';
-            scrapbookStage.classList.add('active');
         }
 
         function addPage() {
             pageCount++;
             const pagesContainer = document.getElementById('scrapbook-pages');
             
-            // Remover mensaje de scrapbook vacío
             const emptyMsg = pagesContainer.querySelector('.empty-scrapbook');
             if (emptyMsg) {
                 emptyMsg.remove();
@@ -706,7 +675,6 @@
             if (page && confirm('¿Estás seguro de eliminar esta página?')) {
                 page.remove();
                 
-                // Si no hay páginas, mostrar mensaje vacío
                 const pagesContainer = document.getElementById('scrapbook-pages');
                 if (pagesContainer.children.length === 0) {
                     pagesContainer.innerHTML = `
