@@ -506,6 +506,46 @@
             font-size: 24px;
             margin-bottom: 10px;
         }
+
+        .mute-button {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s;
+            z-index: 1000;
+            display: none;
+        }
+
+        .mute-button.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mute-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        .shared-notice {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 15px;
+            margin: 20px;
+            border-radius: 8px;
+            text-align: center;
+            color: #856404;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -547,8 +587,12 @@
                     <h1>📖 Mi Scrapbook de Cumpleaños</h1>
                     <p>Crea tus recuerdos especiales</p>
                 </div>
+                <div class="shared-notice">
+                    ⚠️ Este scrapbook es compartido. Todos los que entren al link verán lo que escribas.
+                </div>
                 <div class="scrapbook-controls">
                     <button class="btn btn-success" onclick="saveScrapbook()">💾 Guardar Scrapbook</button>
+                    <button class="btn btn-primary" onclick="refreshScrapbook()">🔄 Actualizar</button>
                 </div>
                 <div class="scrapbook-pages" id="scrapbook-pages">
                     <div class="empty-scrapbook">
@@ -561,6 +605,9 @@
             <div class="save-notification" id="saveNotification">
                 ✅ Scrapbook guardado exitosamente
             </div>
+            <button class="mute-button" id="muteButton" onclick="toggleMute()">
+                🔊
+            </button>
         </div>
     </div>
 
@@ -574,10 +621,11 @@
         let microphone;
         let birthdayAudio;
         let pageCount = 0;
-        const STORAGE_KEY = 'scrapbook_data';
+        let isMuted = false;
+        const STORAGE_KEY = 'scrapbook_shared';
 
-        // Función para guardar automáticamente
-        function autoSaveScrapbook() {
+        // Función para guardar automáticamente en storage compartido
+        async function autoSaveScrapbook() {
             const pages = document.querySelectorAll('.scrapbook-page');
             if (pages.length === 0) return;
             
@@ -596,50 +644,74 @@
                 });
             });
             
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(scrapbookData));
-            localStorage.setItem('scrapbook_page_count', pageCount.toString());
+            try {
+                // Guardar con shared: true para que sea visible por todos
+                await window.storage.set(STORAGE_KEY, JSON.stringify(scrapbookData), true);
+                await window.storage.set('scrapbook_page_count', pageCount.toString(), true);
+            } catch (err) {
+                console.error('Error guardando:', err);
+            }
         }
 
-        // Función para cargar el scrapbook guardado
-        function loadSavedScrapbook() {
-            const savedData = localStorage.getItem(STORAGE_KEY);
-            const savedPageCount = localStorage.getItem('scrapbook_page_count');
-            
-            if (savedData && savedPageCount) {
-                const scrapbookData = JSON.parse(savedData);
-                pageCount = parseInt(savedPageCount);
+        // Función para cargar el scrapbook compartido
+        async function loadSavedScrapbook() {
+            try {
+                const savedData = await window.storage.get(STORAGE_KEY, true);
+                const savedPageCount = await window.storage.get('scrapbook_page_count', true);
                 
-                const pagesContainer = document.getElementById('scrapbook-pages');
-                const emptyMsg = pagesContainer.querySelector('.empty-scrapbook');
-                if (emptyMsg) {
-                    emptyMsg.remove();
-                }
-                
-                scrapbookData.forEach((pageData) => {
-                    const pageDiv = document.createElement('div');
-                    pageDiv.className = 'scrapbook-page';
-                    pageDiv.id = `page-${pageData.pageId}`;
-                    pageDiv.innerHTML = `
-                        <button class="delete-page-btn" onclick="deletePage(${pageData.pageId})">🗑️ Eliminar</button>
-                        <div class="page-number">Página ${pageData.pageId}</div>
-                        <div class="page-content">
-                            <textarea placeholder="Escribe tus recuerdos aquí..." id="text-${pageData.pageId}" oninput="autoSaveScrapbook()">${pageData.text}</textarea>
-                            <div class="page-image-container">
-                                <input type="file" accept="image/*" id="img-${pageData.pageId}" onchange="handleImageUpload(${pageData.pageId})" style="display: none;">
-                                <button class="btn btn-primary" onclick="document.getElementById('img-${pageData.pageId}').click()">📷 Agregar Foto</button>
-                                <div id="preview-${pageData.pageId}">
-                                    ${pageData.image ? `<img src="${pageData.image}" class="page-image" alt="Foto de recuerdo">` : ''}
+                if (savedData && savedData.value && savedPageCount && savedPageCount.value) {
+                    const scrapbookData = JSON.parse(savedData.value);
+                    pageCount = parseInt(savedPageCount.value);
+                    
+                    const pagesContainer = document.getElementById('scrapbook-pages');
+                    const emptyMsg = pagesContainer.querySelector('.empty-scrapbook');
+                    if (emptyMsg) {
+                        emptyMsg.remove();
+                    }
+                    
+                    scrapbookData.forEach((pageData) => {
+                        const pageDiv = document.createElement('div');
+                        pageDiv.className = 'scrapbook-page';
+                        pageDiv.id = `page-${pageData.pageId}`;
+                        pageDiv.innerHTML = `
+                            <button class="delete-page-btn" onclick="deletePage(${pageData.pageId})">🗑️ Eliminar</button>
+                            <div class="page-number">Página ${pageData.pageId}</div>
+                            <div class="page-content">
+                                <textarea placeholder="Escribe tus recuerdos aquí..." id="text-${pageData.pageId}" oninput="autoSaveScrapbook()">${pageData.text}</textarea>
+                                <div class="page-image-container">
+                                    <input type="file" accept="image/*" id="img-${pageData.pageId}" onchange="handleImageUpload(${pageData.pageId})" style="display: none;">
+                                    <button class="btn btn-primary" onclick="document.getElementById('img-${pageData.pageId}').click()">📷 Agregar Foto</button>
+                                    <div id="preview-${pageData.pageId}">
+                                        ${pageData.image ? `<img src="${pageData.image}" class="page-image" alt="Foto de recuerdo">` : ''}
+                                    </div>
+                                </div>
+                                <div class="page-actions">
+                                    <button class="btn-add-next" onclick="addPage()">➕ Agregar Siguiente Página</button>
                                 </div>
                             </div>
-                            <div class="page-actions">
-                                <button class="btn-add-next" onclick="addPage()">➕ Agregar Siguiente Página</button>
-                            </div>
-                        </div>
-                    `;
-                    
-                    pagesContainer.appendChild(pageDiv);
-                });
+                        `;
+                        
+                        pagesContainer.appendChild(pageDiv);
+                    });
+                }
+            } catch (err) {
+                console.error('Error cargando:', err);
             }
+        }
+
+        // Función para refrescar el scrapbook
+        async function refreshScrapbook() {
+            const pagesContainer = document.getElementById('scrapbook-pages');
+            pagesContainer.innerHTML = '<div class="empty-scrapbook"><h2>Cargando...</h2></div>';
+            await loadSavedScrapbook();
+            
+            const notification = document.getElementById('saveNotification');
+            notification.textContent = '🔄 Scrapbook actualizado';
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+                notification.textContent = '✅ Scrapbook guardado exitosamente';
+            }, 2000);
         }
 
         // Crear burbujas
@@ -702,14 +774,12 @@
             document.getElementById('bubble-stage').style.display = 'none';
             document.getElementById('cake-stage').classList.add('active');
             
-            // Usar archivo de audio desde la misma carpeta
             birthdayAudio = new Audio('./aventura-pixel.mp3');
             birthdayAudio.loop = true;
             birthdayAudio.volume = 0.5;
             
-            // Manejo de error si no encuentra el archivo
             birthdayAudio.onerror = () => {
-                console.log('No se pudo cargar el audio. Asegúrate de tener el archivo aventura-pixel.mp3 en la misma carpeta.');
+                console.log('No se pudo cargar el audio.');
             };
             
             initMicrophone();
@@ -764,13 +834,10 @@
                 candlesBlown++;
                 
                 if (candlesBlown === totalCandles) {
-                    // Mostrar mensaje
                     document.getElementById('success').classList.add('active');
                     
-                    // Ir al scrapbook y reproducir música
                     setTimeout(() => {
-                        // Reproducir música al iniciar transición al scrapbook
-                        if (birthdayAudio) {
+                        if (birthdayAudio && !isMuted) {
                             birthdayAudio.play().catch(err => console.log('Error de audio:', err));
                         }
                         
@@ -778,8 +845,12 @@
                         document.getElementById('success').classList.remove('active');
                         document.getElementById('scrapbook-stage').classList.add('active');
                         
-                        // Cargar scrapbook guardado al entrar
-                        loadSavedScrapbook();
+                        const muteBtn = document.getElementById('muteButton');
+                        if (muteBtn) muteBtn.classList.add('show');
+                        
+                        setTimeout(() => {
+                            loadSavedScrapbook();
+                        }, 100);
                     }, 3000);
                 }
             }
@@ -816,7 +887,6 @@
             pagesContainer.appendChild(pageDiv);
             pageDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
             
-            // Guardar automáticamente al agregar una nueva página
             autoSaveScrapbook();
         }
 
@@ -843,9 +913,8 @@
                 });
             });
             
-            // Guardar en localStorage
             try {
-                const jsonData = JSON.stringify(scrapbookData);
+                const jsonData = JSON.stringify(scrapbookData, null, 2);
                 const blob = new Blob([jsonData], { type: 'application/json' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
@@ -856,7 +925,6 @@
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
                 
-                // Mostrar notificación
                 const notification = document.getElementById('saveNotification');
                 notification.classList.add('show');
                 setTimeout(() => {
@@ -867,9 +935,9 @@
             }
         }
 
-        function deletePage(pageId) {
+        async function deletePage(pageId) {
             const page = document.getElementById(`page-${pageId}`);
-            if (page && confirm('¿Estás seguro de eliminar esta página?')) {
+            if (page && confirm('¿Estás seguro de eliminar esta página? Esto afectará a todos los usuarios.')) {
                 page.remove();
                 
                 const pagesContainer = document.getElementById('scrapbook-pages');
@@ -882,6 +950,8 @@
                         </div>
                     `;
                 }
+                
+                await autoSaveScrapbook();
             }
         }
 
@@ -894,12 +964,30 @@
                 reader.onload = function(e) {
                     const preview = document.getElementById(`preview-${pageId}`);
                     preview.innerHTML = `<img src="${e.target.result}" class="page-image" alt="Foto de recuerdo">`;
+                    autoSaveScrapbook();
                 };
                 reader.readAsDataURL(file);
             }
         }
 
-        // Inicializar juego
+        function toggleMute() {
+            if (!birthdayAudio) {
+                console.log('No hay audio disponible');
+                return;
+            }
+            
+            isMuted = !isMuted;
+            const muteButton = document.getElementById('muteButton');
+            
+            if (isMuted) {
+                birthdayAudio.pause();
+                muteButton.textContent = '🔇';
+            } else {
+                birthdayAudio.play().catch(err => console.log('Error de audio:', err));
+                muteButton.textContent = '🔊';
+            }
+        }
+
         createBubbles();
     </script>
 </body>
