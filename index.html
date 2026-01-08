@@ -321,6 +321,9 @@
             justify-content: center;
             gap: 15px;
             flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .btn {
@@ -343,6 +346,22 @@
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
 
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
         .scrapbook-pages {
             padding: 30px;
             min-height: 400px;
@@ -357,6 +376,60 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             position: relative;
             min-height: 300px;
+        }
+
+        .page-actions {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px dashed #ddd;
+        }
+
+        .btn-add-next {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .btn-add-next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.4);
+        }
+
+        .save-notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #28a745;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            display: none;
+            animation: slideIn 0.3s ease-out;
+            z-index: 1000;
+        }
+
+        .save-notification.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
 
         .page-number {
@@ -475,14 +548,18 @@
                     <p>Crea tus recuerdos especiales</p>
                 </div>
                 <div class="scrapbook-controls">
-                    <button class="btn btn-primary" onclick="addPage()">➕ Agregar Página</button>
+                    <button class="btn btn-success" onclick="saveScrapbook()">💾 Guardar Scrapbook</button>
                 </div>
                 <div class="scrapbook-pages" id="scrapbook-pages">
                     <div class="empty-scrapbook">
                         <h2>Tu scrapbook está vacío</h2>
-                        <p>Haz clic en "Agregar Página" para comenzar</p>
+                        <p>Haz clic en el botón de abajo para comenzar</p>
+                        <button class="btn btn-primary" onclick="addPage()" style="margin-top: 20px;">➕ Crear Primera Página</button>
                     </div>
                 </div>
+            </div>
+            <div class="save-notification" id="saveNotification">
+                ✅ Scrapbook guardado exitosamente
             </div>
         </div>
     </div>
@@ -558,10 +635,23 @@
             document.getElementById('bubble-stage').style.display = 'none';
             document.getElementById('cake-stage').classList.add('active');
             
-            // Crear audio de cumpleaños
-            birthdayAudio = new Audio('https://actions.google.com/sounds/v1/musical/happy_birthday.ogg');
+            // Crear audio de cumpleaños con múltiples fuentes como fallback
+            birthdayAudio = new Audio();
+            
+            // Intentar con diferentes fuentes de audio
+            const audioSources = [
+                'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTGH0fPTgjMGHm7A7+OZUA0PVK3n77BdGAg+ltryxnMnBSp+zPLaizsIGGS86+mjUQ4NTKXh8bllHAU2jtLyzo84Bx1xxO/mnVAOD1Gs5vCsYBkHPJPY8sFuJAUme8rx3I4+CRdivOzpoVEODkui4PG7ZBwFM4nQ88uBOggbaLrv45xQDg5QqOXvr2AdBzuU2PKzbScFKHnH8N2OPAoWYbvs6aFRDg1LouDxu2McBTKI0PPLgjoIG2S97OOcUA0PUKvl8K9gHQc7k9fztmwnBSl4x/DdjT0LFmG76+mhUg4NS6Hh8btjHAU0iNDzy4I6CBtmvOzinFAOD1Cr5e+vYB0HO5PX87ZtJwUpd8bw3Y09CxZhu+vpslIND0yh4fG7Yx0FNIXQ88uCOggbaLvt5pxQDQ9Pq+XwsGAfBzyT2PKybSgEKXfG8N2NPQsWYbvr6bJSDg5LoOHxu2MdBTSF0PPLgjkIG2W86+icUA0PTqvl8LBgHwc8k9jysmwnBCl3x/DdjDwLFl+76+myUg4PS6Dh8btjHQU0hdDzy4I5CBtkvevrn1ENC0+s5fCxYR4HPZPX8rJsKAQpd8fw3Yw8CxZfu+vqslIODkug4fG7Yx0FNYXRtmwnBCl3x/DdjDwLFl+76+myUg4PS6Dh8btjHQU1hdDzy4I5CBtkvevrn1ENC0+s5fCxYR4HPZPYOxWN6ejNYBUNCU2s5fCxYR4HPZPYOhScE0mF5fmfUAsOS58DsGAgBzuX2PKybScFK3fH8N2MPAsWX7vr6rJSDg5LoOHxu2MdBTWF0LLLgjkIG2S96+ufUQ0LT6zl8LFhHgc9k9gzFY3p6M1gFQ0JTazl8LFhHgc9k9gyFJwTSYXl+Z9QCw5LnwOwYCAHO5fY8rJtJwUrd8fw3Yw8CxZfu+vqslIODkug4fG7Yx0FNYXQssyCOQgbZL3r659RDQtPrOXwsWEeBz2T2DMVjenozWAVDQlNrOXwsWEeBz2T2DIUnBNJheX5n1ALDkufA7BgIAc7l9jysm0nBSt3x/DdjDwLFl+76+qyUg4OS6Dh8btjHQU1hdDzy4I5CBtkvevrn1ENC0+s5fCxYR4HPZPYMxWN6ejNYBUNCU2s5fCxYR4HPZPYMhScE0mF5fmfUAsOS58DsGAgBzuX2PKybScFK3fH8N2MPAsWX7vr6rJSDg5LoOHxu2MdBTWF0LLLgjkIG2S96+ufUQ0LT6zl8LFhHgc9k9gzFY3p6M1gFQ0JTazl8LFhHgc9k9gyFJwTSYXl+Z9QCw5LnwOwYCAHO5fY8rJtJwUrd8fw3Yw8CxZfu+vqslIODkug4fG7Yx0FNYXQssyCOQgbZL3r659RDQtPrOXwsWEeBz2T2DMVjenozWAVDQlNrOXwsWEeBz2T2DIUnBNJheX5n1ALDkufA7BgIAc7l9jysm0nBSt3x/DdjDwLFl+76+qyUg4OS6Dh8btjHQU1hdDzy4I5CBtkvevrn1ENC0+s5fCxYR4HPZPYMxWN6ejNYBUNCU2s5fCxYR4A==',
+                'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
+            ];
+            
+            birthdayAudio.src = audioSources[0];
             birthdayAudio.loop = true;
             birthdayAudio.volume = 0.5;
+            
+            // Fallback si el primer audio falla
+            birthdayAudio.onerror = () => {
+                birthdayAudio.src = audioSources[1];
+            };
             
             initMicrophone();
         }
@@ -663,11 +753,61 @@
                         <button class="btn btn-primary" onclick="document.getElementById('img-${pageCount}').click()">📷 Agregar Foto</button>
                         <div id="preview-${pageCount}"></div>
                     </div>
+                    <div class="page-actions">
+                        <button class="btn-add-next" onclick="addPage()">➕ Agregar Siguiente Página</button>
+                    </div>
                 </div>
             `;
             
             pagesContainer.appendChild(pageDiv);
-            pageDiv.scrollIntoView({ behavior: 'smooth' });
+            pageDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function saveScrapbook() {
+            const pages = document.querySelectorAll('.scrapbook-page');
+            
+            if (pages.length === 0) {
+                alert('No hay páginas para guardar. Crea al menos una página primero.');
+                return;
+            }
+            
+            const scrapbookData = [];
+            
+            pages.forEach((page, index) => {
+                const pageId = page.id.split('-')[1];
+                const text = document.getElementById(`text-${pageId}`)?.value || '';
+                const imageElement = document.querySelector(`#preview-${pageId} img`);
+                const image = imageElement ? imageElement.src : null;
+                
+                scrapbookData.push({
+                    pageNumber: index + 1,
+                    text: text,
+                    image: image
+                });
+            });
+            
+            // Guardar en localStorage
+            try {
+                const jsonData = JSON.stringify(scrapbookData);
+                const blob = new Blob([jsonData], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `scrapbook_cumpleanos_${new Date().getTime()}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                // Mostrar notificación
+                const notification = document.getElementById('saveNotification');
+                notification.classList.add('show');
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            } catch (err) {
+                alert('Error al guardar el scrapbook: ' + err.message);
+            }
         }
 
         function deletePage(pageId) {
@@ -680,7 +820,8 @@
                     pagesContainer.innerHTML = `
                         <div class="empty-scrapbook">
                             <h2>Tu scrapbook está vacío</h2>
-                            <p>Haz clic en "Agregar Página" para comenzar</p>
+                            <p>Haz clic en el botón de abajo para comenzar</p>
+                            <button class="btn btn-primary" onclick="addPage()" style="margin-top: 20px;">➕ Crear Primera Página</button>
                         </div>
                     `;
                 }
