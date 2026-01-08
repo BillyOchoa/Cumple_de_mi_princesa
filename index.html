@@ -760,28 +760,20 @@
             const flames = document.querySelectorAll('.flame');
             if (candlesBlown < flames.length && !flames[candlesBlown].classList.contains('blown')) {
                 
-                // Reproducir música al soplar la primera vela
-                if (candlesBlown === 0 && birthdayAudio) {
-                    birthdayAudio.play().catch(err => console.log('Error de audio:', err));
-                }
-                
                 flames[candlesBlown].classList.add('blown');
                 candlesBlown++;
                 
                 if (candlesBlown === totalCandles) {
-                    // Detener música
-                    if (birthdayAudio) {
-                        setTimeout(() => {
-                            birthdayAudio.pause();
-                            birthdayAudio.currentTime = 0;
-                        }, 500);
-                    }
-                    
                     // Mostrar mensaje
                     document.getElementById('success').classList.add('active');
                     
-                    // Ir al scrapbook
+                    // Ir al scrapbook y reproducir música
                     setTimeout(() => {
+                        // Reproducir música al iniciar transición al scrapbook
+                        if (birthdayAudio) {
+                            birthdayAudio.play().catch(err => console.log('Error de audio:', err));
+                        }
+                        
                         document.getElementById('cake-stage').style.display = 'none';
                         document.getElementById('success').classList.remove('active');
                         document.getElementById('scrapbook-stage').classList.add('active');
