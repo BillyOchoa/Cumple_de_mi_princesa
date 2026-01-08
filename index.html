@@ -574,6 +574,73 @@
         let microphone;
         let birthdayAudio;
         let pageCount = 0;
+        const STORAGE_KEY = 'scrapbook_data';
+
+        // Función para guardar automáticamente
+        function autoSaveScrapbook() {
+            const pages = document.querySelectorAll('.scrapbook-page');
+            if (pages.length === 0) return;
+            
+            const scrapbookData = [];
+            
+            pages.forEach((page) => {
+                const pageId = page.id.split('-')[1];
+                const text = document.getElementById(`text-${pageId}`)?.value || '';
+                const imageElement = document.querySelector(`#preview-${pageId} img`);
+                const image = imageElement ? imageElement.src : null;
+                
+                scrapbookData.push({
+                    pageId: pageId,
+                    text: text,
+                    image: image
+                });
+            });
+            
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(scrapbookData));
+            localStorage.setItem('scrapbook_page_count', pageCount.toString());
+        }
+
+        // Función para cargar el scrapbook guardado
+        function loadSavedScrapbook() {
+            const savedData = localStorage.getItem(STORAGE_KEY);
+            const savedPageCount = localStorage.getItem('scrapbook_page_count');
+            
+            if (savedData && savedPageCount) {
+                const scrapbookData = JSON.parse(savedData);
+                pageCount = parseInt(savedPageCount);
+                
+                const pagesContainer = document.getElementById('scrapbook-pages');
+                const emptyMsg = pagesContainer.querySelector('.empty-scrapbook');
+                if (emptyMsg) {
+                    emptyMsg.remove();
+                }
+                
+                scrapbookData.forEach((pageData) => {
+                    const pageDiv = document.createElement('div');
+                    pageDiv.className = 'scrapbook-page';
+                    pageDiv.id = `page-${pageData.pageId}`;
+                    pageDiv.innerHTML = `
+                        <button class="delete-page-btn" onclick="deletePage(${pageData.pageId})">🗑️ Eliminar</button>
+                        <div class="page-number">Página ${pageData.pageId}</div>
+                        <div class="page-content">
+                            <textarea placeholder="Escribe tus recuerdos aquí..." id="text-${pageData.pageId}" oninput="autoSaveScrapbook()">${pageData.text}</textarea>
+                            <div class="page-image-container">
+                                <input type="file" accept="image/*" id="img-${pageData.pageId}" onchange="handleImageUpload(${pageData.pageId})" style="display: none;">
+                                <button class="btn btn-primary" onclick="document.getElementById('img-${pageData.pageId}').click()">📷 Agregar Foto</button>
+                                <div id="preview-${pageData.pageId}">
+                                    ${pageData.image ? `<img src="${pageData.image}" class="page-image" alt="Foto de recuerdo">` : ''}
+                                </div>
+                            </div>
+                            <div class="page-actions">
+                                <button class="btn-add-next" onclick="addPage()">➕ Agregar Siguiente Página</button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    pagesContainer.appendChild(pageDiv);
+                });
+            }
+        }
 
         // Crear burbujas
         function createBubbles() {
@@ -636,14 +703,13 @@
             document.getElementById('cake-stage').classList.add('active');
             
             // Usar archivo de audio desde la misma carpeta
-            // Coloca tu archivo de audio (por ejemplo: cumpleanos.mp3) en la misma carpeta
             birthdayAudio = new Audio('./aventura-pixel.mp3');
             birthdayAudio.loop = true;
             birthdayAudio.volume = 0.5;
             
             // Manejo de error si no encuentra el archivo
             birthdayAudio.onerror = () => {
-                console.log('No se pudo cargar el audio. Asegúrate de tener el archivo cumpleanos.mp3 en la misma carpeta.');
+                console.log('No se pudo cargar el audio. Asegúrate de tener el archivo aventura-pixel.mp3 en la misma carpeta.');
             };
             
             initMicrophone();
@@ -719,6 +785,9 @@
                         document.getElementById('cake-stage').style.display = 'none';
                         document.getElementById('success').classList.remove('active');
                         document.getElementById('scrapbook-stage').classList.add('active');
+                        
+                        // Cargar scrapbook guardado al entrar
+                        loadSavedScrapbook();
                     }, 3000);
                 }
             }
@@ -740,7 +809,7 @@
                 <button class="delete-page-btn" onclick="deletePage(${pageCount})">🗑️ Eliminar</button>
                 <div class="page-number">Página ${pageCount}</div>
                 <div class="page-content">
-                    <textarea placeholder="Escribe tus recuerdos aquí..." id="text-${pageCount}"></textarea>
+                    <textarea placeholder="Escribe tus recuerdos aquí..." id="text-${pageCount}" oninput="autoSaveScrapbook()"></textarea>
                     <div class="page-image-container">
                         <input type="file" accept="image/*" id="img-${pageCount}" onchange="handleImageUpload(${pageCount})" style="display: none;">
                         <button class="btn btn-primary" onclick="document.getElementById('img-${pageCount}').click()">📷 Agregar Foto</button>
@@ -754,6 +823,9 @@
             
             pagesContainer.appendChild(pageDiv);
             pageDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // Guardar automáticamente al agregar una nueva página
+            autoSaveScrapbook();
         }
 
         function saveScrapbook() {
