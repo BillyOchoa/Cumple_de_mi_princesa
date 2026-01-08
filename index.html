@@ -645,19 +645,34 @@
             });
             
             try {
+                console.log('Guardando datos compartidos:', scrapbookData);
                 // Guardar con shared: true para que sea visible por todos
-                await window.storage.set(STORAGE_KEY, JSON.stringify(scrapbookData), true);
-                await window.storage.set('scrapbook_page_count', pageCount.toString(), true);
+                const result1 = await window.storage.set(STORAGE_KEY, JSON.stringify(scrapbookData), true);
+                const result2 = await window.storage.set('scrapbook_page_count', pageCount.toString(), true);
+                console.log('Datos guardados:', result1, result2);
+                
+                // Mostrar confirmación visual
+                const notification = document.getElementById('saveNotification');
+                notification.textContent = '💾 Guardado automáticamente';
+                notification.classList.add('show');
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    notification.textContent = '✅ Scrapbook guardado exitosamente';
+                }, 1500);
             } catch (err) {
                 console.error('Error guardando:', err);
+                alert('Error al guardar: ' + err.message);
             }
         }
 
         // Función para cargar el scrapbook compartido
         async function loadSavedScrapbook() {
             try {
+                console.log('Cargando datos compartidos...');
                 const savedData = await window.storage.get(STORAGE_KEY, true);
                 const savedPageCount = await window.storage.get('scrapbook_page_count', true);
+                
+                console.log('Datos cargados:', savedData, savedPageCount);
                 
                 if (savedData && savedData.value && savedPageCount && savedPageCount.value) {
                     const scrapbookData = JSON.parse(savedData.value);
@@ -668,6 +683,9 @@
                     if (emptyMsg) {
                         emptyMsg.remove();
                     }
+                    
+                    // Limpiar páginas existentes
+                    pagesContainer.innerHTML = '';
                     
                     scrapbookData.forEach((pageData) => {
                         const pageDiv = document.createElement('div');
@@ -693,9 +711,14 @@
                         
                         pagesContainer.appendChild(pageDiv);
                     });
+                    
+                    console.log('Scrapbook cargado exitosamente');
+                } else {
+                    console.log('No hay datos guardados');
                 }
             } catch (err) {
                 console.error('Error cargando:', err);
+                alert('Error al cargar: ' + err.message);
             }
         }
 
