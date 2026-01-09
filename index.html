@@ -386,6 +386,79 @@
             transform: scale(1.1);
             box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
         }
+
+         /* Lightbox para zoom de imágenes */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox-content {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            animation: zoomIn 0.3s ease;
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .lightbox-close:hover {
+            transform: scale(1.1);
+            background: white;
+        }
+
+        .lightbox-caption {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px 30px;
+            border-radius: 10px;
+            color: #333;
+            font-size: 18px;
+            max-width: 80%;
+            text-align: center;
+        }
+        
     </style>
 </head>
 <body>
@@ -607,8 +680,11 @@
                     <div class="scrapbook-page">
                         <div class="page-number">Tu carta </div>
                         <div class="page-content">
-                            <h2>Momentos felices</h2>
-                            <p>Aquí va una descripción de la foto.</p>
+                            <p>Con todo mi corazón.</p>
+                            <img src="./cumpleanos.jpg" 
+                                 class="page-image" 
+                                 alt="Celebración de cumpleaños" 
+                                 onclick="openLightbox(this)">
                             <!-- Ejemplo: <img src="https://via.placeholder.com/600x400" class="page-image" alt="Foto de ejemplo"> -->
                         </div>
                     </div>
