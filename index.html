@@ -666,11 +666,25 @@
         }
 
         // Función para cargar el scrapbook compartido
+        // Función para cargar el scrapbook compartido
         async function loadSavedScrapbook() {
             try {
                 console.log('Cargando datos compartidos...');
-                const savedData = await window.storage.get(STORAGE_KEY, true);
-                const savedPageCount = await window.storage.get('scrapbook_page_count', true);
+                let savedData = null;
+                let savedPageCount = null;
+                
+                // Intentar obtener datos, capturando error si no existen
+                try {
+                    savedData = await window.storage.get(STORAGE_KEY, true);
+                } catch (e) {
+                    console.log('No hay scrapbook guardado aún');
+                }
+                
+                try {
+                    savedPageCount = await window.storage.get('scrapbook_page_count', true);
+                } catch (e) {
+                    console.log('No hay contador de páginas guardado');
+                }
                 
                 console.log('Datos cargados:', savedData, savedPageCount);
                 
@@ -690,7 +704,7 @@
                     scrapbookData.forEach((pageData) => {
                         const pageDiv = document.createElement('div');
                         pageDiv.className = 'scrapbook-page';
-                        pageDiv.id = `page-${pageData.pageId}`;
+                        pageDiv.id = `page-${pageData.pageId}`;    
                         pageDiv.innerHTML = `
                             <button class="delete-page-btn" onclick="deletePage(${pageData.pageId})">🗑️ Eliminar</button>
                             <div class="page-number">Página ${pageData.pageId}</div>
@@ -713,14 +727,14 @@
                     });
                     
                     console.log('Scrapbook cargado exitosamente');
-                } else {
-                    console.log('No hay datos guardados');
+            } else {
+                        console.log('No hay datos guardados previamente');
+                    }
+                } catch (err) {
+                    console.error('Error cargando scrapbook:', err);
+                    // No mostrar alerta en la carga inicial
                 }
-            } catch (err) {
-                console.error('Error cargando:', err);
-                alert('Error al cargar: ' + err.message);
             }
-        }
 
         // Función para refrescar el scrapbook
         async function refreshScrapbook() {
