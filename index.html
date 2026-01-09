@@ -51,13 +51,7 @@
             cursor: pointer;
             animation: float 3s ease-in-out infinite;
             -webkit-tap-highlight-color: transparent !important;
-            -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
-            tap-highlight-color: transparent !important;
             outline: none !important;
-        }
-
-        .bubble:hover {
-            transform: scale(1.1);
         }
 
         @keyframes float {
@@ -313,58 +307,8 @@
             margin-bottom: 10px;
         }
 
-        .scrapbook-controls {
-            background: #f9f9f9;
-            padding: 20px;
-            border-bottom: 2px solid #ddd;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .btn {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: bold;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, #28a745 0%, #218838 100%);
-            color: white;
-        }
-
-        .btn-success:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none !important;
-        }
-
         .scrapbook-pages {
             padding: 30px;
-            min-height: 400px;
         }
 
         .scrapbook-page {
@@ -375,61 +319,7 @@
             margin-bottom: 30px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             position: relative;
-            min-height: 300px;
-        }
-
-        .page-actions {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 2px dashed #ddd;
-        }
-
-        .btn-add-next {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        .btn-add-next:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.4);
-        }
-
-        .save-notification {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: #28a745;
-            color: white;
-            padding: 15px 25px;
-            border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-            display: none;
-            animation: slideIn 0.3s ease-out;
-            z-index: 1000;
-        }
-
-        .save-notification.show {
-            display: block;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(400px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+            min-height: 200px;
         }
 
         .page-number {
@@ -446,65 +336,26 @@
 
         .page-content {
             margin-top: 30px;
-        }
-
-        .page-content textarea {
-            width: 100%;
-            min-height: 150px;
-            padding: 15px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            font-family: 'Arial', sans-serif;
-            resize: vertical;
             -webkit-user-select: text;
             user-select: text;
         }
 
-        .page-content textarea:focus {
-            outline: none;
-            border-color: #667eea;
+        .page-content h2 {
+            color: #667eea;
+            margin-bottom: 15px;
         }
 
-        .page-image-container {
-            margin-top: 15px;
-            text-align: center;
+        .page-content p {
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 15px;
         }
 
         .page-image {
             max-width: 100%;
-            max-height: 300px;
             border-radius: 8px;
-            margin-top: 10px;
+            margin-top: 15px;
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .delete-page-btn {
-            position: absolute;
-            top: 10px;
-            left: 20px;
-            background: #e74c3c;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .delete-page-btn:hover {
-            background: #c0392b;
-        }
-
-        .empty-scrapbook {
-            text-align: center;
-            padding: 60px 20px;
-            color: #999;
-        }
-
-        .empty-scrapbook h2 {
-            font-size: 24px;
-            margin-bottom: 10px;
         }
 
         .mute-button {
@@ -534,17 +385,6 @@
         .mute-button:hover {
             transform: scale(1.1);
             box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
-        }
-
-        .shared-notice {
-            background: #fff3cd;
-            border: 2px solid #ffc107;
-            padding: 15px;
-            margin: 20px;
-            border-radius: 8px;
-            text-align: center;
-            color: #856404;
-            font-weight: bold;
         }
     </style>
 </head>
@@ -585,25 +425,58 @@
             <div class="scrapbook-container">
                 <div class="scrapbook-header">
                     <h1>📖 Mi Scrapbook de Cumpleaños</h1>
-                    <p>Crea tus recuerdos especiales</p>
-                </div>
-                <div class="shared-notice">
-                    ⚠️ Este scrapbook es compartido. Todos los que entren al link verán lo que escribas.
-                </div>
-                <div class="scrapbook-controls">
-                    <button class="btn btn-success" onclick="saveScrapbook()">💾 Guardar Scrapbook</button>
-                    <button class="btn btn-primary" onclick="refreshScrapbook()">🔄 Actualizar</button>
+                    <p>Recuerdos especiales</p>
                 </div>
                 <div class="scrapbook-pages" id="scrapbook-pages">
-                    <div class="empty-scrapbook">
-                        <h2>Tu scrapbook está vacío</h2>
-                        <p>Haz clic en el botón de abajo para comenzar</p>
-                        <button class="btn btn-primary" onclick="addPage()" style="margin-top: 20px;">➕ Crear Primera Página</button>
+                    
+                    <!-- PÁGINA 1 - Edita el contenido aquí -->
+                    <div class="scrapbook-page">
+                        <div class="page-number">Página 1</div>
+                        <div class="page-content">
+                            <h2>Mi primer recuerdo</h2>
+                            <p>Escribe aquí tu primer recuerdo especial. Puedes agregar todo el texto que quieras.</p>
+                            <!-- Para agregar una imagen, descomenta la siguiente línea y reemplaza la URL -->
+                            <!-- <img src="URL_DE_TU_IMAGEN" class="page-image" alt="Foto"> -->
+                        </div>
                     </div>
+
+                    <!-- PÁGINA 2 - Ejemplo con texto diferente -->
+                    <div class="scrapbook-page">
+                        <div class="page-number">Página 2</div>
+                        <div class="page-content">
+                            <h2>Un día especial</h2>
+                            <p>Este es otro recuerdo importante que quiero guardar.</p>
+                            <p>Puedes agregar múltiples párrafos si lo deseas.</p>
+                        </div>
+                    </div>
+
+                    <!-- PÁGINA 3 - Ejemplo con imagen -->
+                    <div class="scrapbook-page">
+                        <div class="page-number">Página 3</div>
+                        <div class="page-content">
+                            <h2>Momentos felices</h2>
+                            <p>Aquí va una descripción de la foto.</p>
+                            <!-- Ejemplo: <img src="https://via.placeholder.com/600x400" class="page-image" alt="Foto de ejemplo"> -->
+                        </div>
+                    </div>
+
+                    <!-- 
+                    INSTRUCCIONES PARA AGREGAR MÁS PÁGINAS:
+                    
+                    Copia y pega este bloque para agregar una nueva página:
+                    
+                    <div class="scrapbook-page">
+                        <div class="page-number">Página X</div>
+                        <div class="page-content">
+                            <h2>Título de la página</h2>
+                            <p>Tu texto aquí.</p>
+                            <img src="URL_DE_TU_IMAGEN" class="page-image" alt="Descripción">
+                        </div>
+                    </div>
+                    
+                    -->
+
                 </div>
-            </div>
-            <div class="save-notification" id="saveNotification">
-                ✅ Scrapbook guardado exitosamente
             </div>
             <button class="mute-button" id="muteButton" onclick="toggleMute()">
                 🔊
@@ -620,137 +493,8 @@
         let analyser;
         let microphone;
         let birthdayAudio;
-        let pageCount = 0;
         let isMuted = false;
-        const STORAGE_KEY = 'scrapbook_shared';
 
-        // Función para guardar automáticamente en storage compartido
-        async function autoSaveScrapbook() {
-            const pages = document.querySelectorAll('.scrapbook-page');
-            if (pages.length === 0) return;
-            
-            const scrapbookData = [];
-            
-            pages.forEach((page) => {
-                const pageId = page.id.split('-')[1];
-                const text = document.getElementById(`text-${pageId}`)?.value || '';
-                const imageElement = document.querySelector(`#preview-${pageId} img`);
-                const image = imageElement ? imageElement.src : null;
-                
-                scrapbookData.push({
-                    pageId: pageId,
-                    text: text,
-                    image: image
-                });
-            });
-            
-            try {
-                console.log('Guardando datos compartidos:', scrapbookData);
-                await window.storage.set(STORAGE_KEY, JSON.stringify(scrapbookData), true);
-                await window.storage.set('scrapbook_page_count', pageCount.toString(), true);
-                console.log('Datos guardados exitosamente');
-                
-                const notification = document.getElementById('saveNotification');
-                notification.textContent = '💾 Guardado automáticamente';
-                notification.classList.add('show');
-                setTimeout(() => {
-                    notification.classList.remove('show');
-                    notification.textContent = '✅ Scrapbook guardado exitosamente';
-                }, 1500);
-            } catch (err) {
-                console.error('Error guardando:', err);
-            }
-        }
-
-        // Función para cargar el scrapbook compartido
-        async function loadSavedScrapbook() {
-            try {
-                console.log('Cargando datos compartidos...');
-                let savedData = null;
-                let savedPageCount = null;
-                
-                // Intentar obtener datos, capturando error si no existen
-                try {
-                    savedData = await window.storage.get(STORAGE_KEY, true);
-                } catch (e) {
-                    console.log('No hay scrapbook guardado aún');
-                }
-                
-                try {
-                    savedPageCount = await window.storage.get('scrapbook_page_count', true);
-                } catch (e) {
-                    console.log('No hay contador de páginas guardado');
-                }
-                
-                console.log('Datos cargados:', savedData, savedPageCount);
-                
-                if (savedData && savedData.value && savedPageCount && savedPageCount.value) {
-                    const scrapbookData = JSON.parse(savedData.value);
-                    pageCount = parseInt(savedPageCount.value);
-                    
-                    const pagesContainer = document.getElementById('scrapbook-pages');
-                    const emptyMsg = pagesContainer.querySelector('.empty-scrapbook');
-                    if (emptyMsg) {
-                        emptyMsg.remove();
-                    }
-                    
-                    pagesContainer.innerHTML = '';
-                    
-                    scrapbookData.forEach((pageData) => {
-                        const pageDiv = document.createElement('div');
-                        pageDiv.className = 'scrapbook-page';
-                        pageDiv.id = `page-${pageData.pageId}`;
-                        pageDiv.innerHTML = `
-                            <button class="delete-page-btn" onclick="deletePage(${pageData.pageId})">🗑️ Eliminar</button>
-                            <div class="page-number">Página ${pageData.pageId}</div>
-                            <div class="page-content">
-                                <textarea placeholder="Escribe tus recuerdos aquí..." id="text-${pageData.pageId}" oninput="autoSaveScrapbook()">${pageData.text}</textarea>
-                                <div class="page-image-container">
-                                    <input type="file" accept="image/*" id="img-${pageData.pageId}" onchange="handleImageUpload(${pageData.pageId})" style="display: none;">
-                                    <button class="btn btn-primary" onclick="document.getElementById('img-${pageData.pageId}').click()">📷 Agregar Foto</button>
-                                    <div id="preview-${pageData.pageId}">
-                                        ${pageData.image ? `<img src="${pageData.image}" class="page-image" alt="Foto de recuerdo">` : ''}
-                                    </div>
-                                </div>
-                                <div class="page-actions">
-                                    <button class="btn-add-next" onclick="addPage()">➕ Agregar Siguiente Página</button>
-                                </div>
-                            </div>
-                        `;
-                        
-                        pagesContainer.appendChild(pageDiv);
-                    });
-                    
-                    console.log('Scrapbook cargado exitosamente');
-                } else {
-                    console.log('No hay datos guardados previamente');
-                }
-            } catch (err) {
-                console.error('Error cargando scrapbook:', err);
-            }
-        }
-
-        // Función para refrescar el scrapbook
-        async function refreshScrapbook() {
-            const pagesContainer = document.getElementById('scrapbook-pages');
-            pagesContainer.innerHTML = '<div class="empty-scrapbook"><h2>Cargando...</h2></div>';
-            
-            try {
-                await loadSavedScrapbook();
-            } catch (err) {
-                console.error('Error al refrescar:', err);
-            }
-            
-            const notification = document.getElementById('saveNotification');
-            notification.textContent = '🔄 Scrapbook actualizado';
-            notification.classList.add('show');
-            setTimeout(() => {
-                notification.classList.remove('show');
-                notification.textContent = '✅ Scrapbook guardado exitosamente';
-            }, 2000);
-        }
-
-        // Crear burbujas
         function createBubbles() {
             const stage = document.getElementById('bubble-stage');
             
@@ -883,138 +627,13 @@
                         
                         const muteBtn = document.getElementById('muteButton');
                         if (muteBtn) muteBtn.classList.add('show');
-                        
-                        setTimeout(async () => {
-                            try {
-                                await loadSavedScrapbook();
-                            } catch (err) {
-                                console.error('Error inicial al cargar scrapbook:', err);
-                            }
-                        }, 100);
                     }, 3000);
                 }
             }
         }
 
-        function addPage() {
-            pageCount++;
-            const pagesContainer = document.getElementById('scrapbook-pages');
-            
-            const emptyMsg = pagesContainer.querySelector('.empty-scrapbook');
-            if (emptyMsg) {
-                emptyMsg.remove();
-            }
-            
-            const pageDiv = document.createElement('div');
-            pageDiv.className = 'scrapbook-page';
-            pageDiv.id = `page-${pageCount}`;
-            pageDiv.innerHTML = `
-                <button class="delete-page-btn" onclick="deletePage(${pageCount})">🗑️ Eliminar</button>
-                <div class="page-number">Página ${pageCount}</div>
-                <div class="page-content">
-                    <textarea placeholder="Escribe tus recuerdos aquí..." id="text-${pageCount}" oninput="autoSaveScrapbook()"></textarea>
-                    <div class="page-image-container">
-                        <input type="file" accept="image/*" id="img-${pageCount}" onchange="handleImageUpload(${pageCount})" style="display: none;">
-                        <button class="btn btn-primary" onclick="document.getElementById('img-${pageCount}').click()">📷 Agregar Foto</button>
-                        <div id="preview-${pageCount}"></div>
-                    </div>
-                    <div class="page-actions">
-                        <button class="btn-add-next" onclick="addPage()">➕ Agregar Siguiente Página</button>
-                    </div>
-                </div>
-            `;
-            
-            pagesContainer.appendChild(pageDiv);
-            pageDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            
-            autoSaveScrapbook();
-        }
-
-        function saveScrapbook() {
-            const pages = document.querySelectorAll('.scrapbook-page');
-            
-            if (pages.length === 0) {
-                alert('No hay páginas para guardar. Crea al menos una página primero.');
-                return;
-            }
-            
-            const scrapbookData = [];
-            
-            pages.forEach((page, index) => {
-                const pageId = page.id.split('-')[1];
-                const text = document.getElementById(`text-${pageId}`)?.value || '';
-                const imageElement = document.querySelector(`#preview-${pageId} img`);
-                const image = imageElement ? imageElement.src : null;
-                
-                scrapbookData.push({
-                    pageNumber: index + 1,
-                    text: text,
-                    image: image
-                });
-            });
-            
-            try {
-                const jsonData = JSON.stringify(scrapbookData, null, 2);
-                const blob = new Blob([jsonData], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `scrapbook_cumpleanos_${new Date().getTime()}.json`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                
-                const notification = document.getElementById('saveNotification');
-                notification.classList.add('show');
-                setTimeout(() => {
-                    notification.classList.remove('show');
-                }, 3000);
-            } catch (err) {
-                alert('Error al guardar el scrapbook: ' + err.message);
-            }
-        }
-
-        async function deletePage(pageId) {
-            const page = document.getElementById(`page-${pageId}`);
-            if (page && confirm('¿Estás seguro de eliminar esta página? Esto afectará a todos los usuarios.')) {
-                page.remove();
-                
-                const pagesContainer = document.getElementById('scrapbook-pages');
-                if (pagesContainer.children.length === 0) {
-                    pagesContainer.innerHTML = `
-                        <div class="empty-scrapbook">
-                            <h2>Tu scrapbook está vacío</h2>
-                            <p>Haz clic en el botón de abajo para comenzar</p>
-                            <button class="btn btn-primary" onclick="addPage()" style="margin-top: 20px;">➕ Crear Primera Página</button>
-                        </div>
-                    `;
-                }
-                
-                await autoSaveScrapbook();
-            }
-        }
-
-        function handleImageUpload(pageId) {
-            const input = document.getElementById(`img-${pageId}`);
-            const file = input.files[0];
-            
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const preview = document.getElementById(`preview-${pageId}`);
-                    preview.innerHTML = `<img src="${e.target.result}" class="page-image" alt="Foto de recuerdo">`;
-                    autoSaveScrapbook();
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
         function toggleMute() {
-            if (!birthdayAudio) {
-                console.log('No hay audio disponible');
-                return;
-            }
+            if (!birthdayAudio) return;
             
             isMuted = !isMuted;
             const muteButton = document.getElementById('muteButton');
