@@ -646,12 +646,10 @@
             
             try {
                 console.log('Guardando datos compartidos:', scrapbookData);
-                // Guardar con shared: true para que sea visible por todos
-                const result1 = await window.storage.set(STORAGE_KEY, JSON.stringify(scrapbookData), true);
-                const result2 = await window.storage.set('scrapbook_page_count', pageCount.toString(), true);
-                console.log('Datos guardados:', result1, result2);
+                await window.storage.set(STORAGE_KEY, JSON.stringify(scrapbookData), true);
+                await window.storage.set('scrapbook_page_count', pageCount.toString(), true);
+                console.log('Datos guardados exitosamente');
                 
-                // Mostrar confirmación visual
                 const notification = document.getElementById('saveNotification');
                 notification.textContent = '💾 Guardado automáticamente';
                 notification.classList.add('show');
@@ -661,11 +659,9 @@
                 }, 1500);
             } catch (err) {
                 console.error('Error guardando:', err);
-                alert('Error al guardar: ' + err.message);
             }
         }
 
-        // Función para cargar el scrapbook compartido
         // Función para cargar el scrapbook compartido
         async function loadSavedScrapbook() {
             try {
@@ -698,13 +694,12 @@
                         emptyMsg.remove();
                     }
                     
-                    // Limpiar páginas existentes
                     pagesContainer.innerHTML = '';
                     
                     scrapbookData.forEach((pageData) => {
                         const pageDiv = document.createElement('div');
                         pageDiv.className = 'scrapbook-page';
-                        pageDiv.id = `page-${pageData.pageId}`;    
+                        pageDiv.id = `page-${pageData.pageId}`;
                         pageDiv.innerHTML = `
                             <button class="delete-page-btn" onclick="deletePage(${pageData.pageId})">🗑️ Eliminar</button>
                             <div class="page-number">Página ${pageData.pageId}</div>
@@ -727,20 +722,24 @@
                     });
                     
                     console.log('Scrapbook cargado exitosamente');
-            } else {
-                        console.log('No hay datos guardados previamente');
-                    }
-                } catch (err) {
-                    console.error('Error cargando scrapbook:', err);
-                    // No mostrar alerta en la carga inicial
+                } else {
+                    console.log('No hay datos guardados previamente');
                 }
+            } catch (err) {
+                console.error('Error cargando scrapbook:', err);
             }
+        }
 
         // Función para refrescar el scrapbook
         async function refreshScrapbook() {
             const pagesContainer = document.getElementById('scrapbook-pages');
             pagesContainer.innerHTML = '<div class="empty-scrapbook"><h2>Cargando...</h2></div>';
-            await loadSavedScrapbook();
+            
+            try {
+                await loadSavedScrapbook();
+            } catch (err) {
+                console.error('Error al refrescar:', err);
+            }
             
             const notification = document.getElementById('saveNotification');
             notification.textContent = '🔄 Scrapbook actualizado';
@@ -885,8 +884,12 @@
                         const muteBtn = document.getElementById('muteButton');
                         if (muteBtn) muteBtn.classList.add('show');
                         
-                        setTimeout(() => {
-                            loadSavedScrapbook();
+                        setTimeout(async () => {
+                            try {
+                                await loadSavedScrapbook();
+                            } catch (err) {
+                                console.error('Error inicial al cargar scrapbook:', err);
+                            }
                         }, 100);
                     }, 3000);
                 }
